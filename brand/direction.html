@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leo'z — Design Direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0b; --panel:#131316; --panel2:#1a1a1e; --line:#29282e;
+    --ink:#f4f1ec; --mut:#a6a3a1; --mut2:#75737a;
+    --gold:#d8b25a; --gold-lite:#ecd79b; --brass:#b8863b;
+    --green:#203a33; --orange:#b85c2a; --marble:#c7c3bd;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:Poppins,system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 28px}
+  a{color:var(--gold-lite);text-decoration:none} a:hover{text-decoration:underline}
+  img{max-width:100%;display:block}
+
+  header{position:sticky;top:0;z-index:30;background:rgba(10,10,11,.84);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .hrow{display:flex;align-items:center;gap:13px;height:62px}
+  .hrow img{height:32px}
+  .hrow .t{font-family:Cinzel,serif;letter-spacing:.16em;font-size:13px}
+  .hrow .t b{color:var(--gold)}
+  .hrow nav{margin-left:auto;display:flex;gap:20px}
+  .hrow nav a{color:var(--mut);font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+  .hrow nav a:hover{color:var(--gold-lite);text-decoration:none}
+  @media(max-width:780px){.hrow nav{display:none}}
+
+  /* brackets motif (their own) */
+  .brk{position:relative;display:inline-block;padding:2px 20px}
+  .brk::before,.brk::after{content:"";position:absolute;width:16px;height:14px;border:2px solid var(--gold)}
+  .brk::before{left:0;top:-4px;border-right:0;border-bottom:0}
+  .brk::after{right:0;bottom:-4px;border-left:0;border-top:0}
+
+  .kicker{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  h2{font-family:Poppins;font-weight:700;font-size:clamp(22px,3.4vw,31px);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+  .lead{color:var(--mut);max-width:740px;margin-bottom:30px;font-size:15px}
+  section{padding:58px 0;border-bottom:1px solid var(--line)}
+
+  /* hero */
+  .hero{position:relative;min-height:84vh;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .bg{position:absolute;inset:0;background:url('site-grab/2025_01_Leoz.jpeg') center 28%/cover;filter:saturate(.9) brightness(.42)}
+  .hero .veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,11,.94) 0%,rgba(10,10,11,.72) 45%,rgba(10,10,11,.45) 100%)}
+  .hero .in{position:relative;z-index:2;padding:70px 0}
+  .hero img.lion{height:78px;margin-bottom:22px}
+  .hero .eye{font-size:11.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+  .hero h1{font-family:Cinzel,serif;font-weight:600;font-size:clamp(38px,7vw,78px);line-height:1.03;letter-spacing:.01em}
+  .hero .sub{font-family:Poppins;font-weight:300;font-size:clamp(15px,2.1vw,19px);color:var(--mut);margin-top:20px;max-width:600px;line-height:1.55}
+  .hero .meta{margin-top:30px;display:flex;gap:26px;flex-wrap:wrap;font-size:12px;color:var(--mut2);letter-spacing:.03em}
+  .hero .meta b{color:var(--mut)}
+
+  /* brand truth */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}}
+  .facts li{list-style:none;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--mut);display:flex;gap:12px}
+  .facts li b{color:var(--ink);min-width:116px;font-weight:600}
+  .pal-row{display:flex;gap:9px;flex-wrap:wrap;margin:6px 0 4px}
+  .sw{width:58px;height:58px;border-radius:9px;border:1px solid var(--line);position:relative}
+  .sw span{position:absolute;bottom:-17px;left:0;right:0;text-align:center;font-size:9px;color:var(--mut2);letter-spacing:.02em}
+  .sub-h{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin:30px 0 20px}
+  .type-demo{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .type-demo .lockup{font-family:'Cormorant Garamond',serif}
+  .type-demo .word{font-weight:600;font-size:40px;letter-spacing:.01em;line-height:1}
+  .type-demo .gents{font-family:Cinzel,serif;font-size:15px;letter-spacing:.42em;color:var(--mut);margin-top:4px}
+  .type-demo .r{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--mut)}
+  .type-demo .r b{color:var(--ink)}
+
+  /* own words */
+  .words{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media(max-width:760px){.words{grid-template-columns:1fr}}
+  .word-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .word-card .wl{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+  .word-card p{font-size:13.5px;color:var(--mut);line-height:1.6}
+  .word-card p .big{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--ink);font-style:italic}
+  .vals{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .vals span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lite);border:1px solid var(--line);border-radius:30px;padding:6px 13px}
+
+  /* photography */
+  .shots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  @media(max-width:760px){.shots{grid-template-columns:repeat(2,1fr)}}
+  .shots figure{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  .shots img{aspect-ratio:3/4;object-fit:cover;width:100%}
+  .shots figcaption{position:absolute;bottom:0;left:0;right:0;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:#fff;padding:14px 8px 7px;background:linear-gradient(transparent,rgba(0,0,0,.8))}
+  .note{font-size:12px;color:var(--mut2);margin-top:16px}
+
+  /* references */
+  .refs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:860px){.refs{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.refs{grid-template-columns:1fr}}
+  .ref{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:16px}
+  .ref .n{font-weight:600;font-size:14px;display:flex;justify-content:space-between}
+  .ref .n .rank{font-family:Cinzel,serif;color:var(--gold);font-size:12px}
+  .ref .chips{display:flex;gap:5px;margin:9px 0}
+  .ref .chip{width:18px;height:18px;border-radius:4px;border:1px solid var(--line)}
+  .ref .steal{font-size:12px;color:var(--mut);margin:6px 0 9px;line-height:1.5}
+  .ref .steal em{color:var(--gold-lite);font-style:normal;font-weight:600}
+  .ref a{font-size:11px}
+
+  /* directions */
+  .dirs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:900px){.dirs{grid-template-columns:1fr}}
+  .dir{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .dir.rec{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+  .dir .badge{position:absolute;top:0;right:0;background:var(--gold);color:#1a1405;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:0 0 0 10px;z-index:3}
+  .dir .specimen{height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+  .dir .specimen::after{content:"";position:absolute;inset:0;background:rgba(10,10,11,.55)}
+  .dir .specimen>*{position:relative;z-index:2}
+  .sp1{background:url('assets/tile-lounge.jpg') center/cover}
+  .sp2{background:url('assets/tile-reception.jpg') center/cover}
+  .sp3{background:url('assets/tile-station.jpg') center/cover}
+  .dir .specimen .big{font-size:30px;letter-spacing:.04em;color:#fff}
+  .sp1 .big{font-family:Cinzel,serif} .sp2 .big{font-family:Poppins;font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+  .sp3 .big{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:38px}
+  .dir .specimen .small{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-lite)}
+  .dir .body{padding:18px;display:flex;flex-direction:column;flex:1}
+  .dir h3{font-size:16px;font-weight:600;margin-bottom:3px}
+  .dir .tag{font-size:10.5px;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:11px}
+  .dir p{font-size:12.5px;color:var(--mut);margin-bottom:12px;line-height:1.55}
+  .dir .pal{display:flex;gap:5px;margin-bottom:12px}
+  .dir .pal i{width:24px;height:24px;border-radius:5px;border:1px solid var(--line)}
+  .dir .supp{font-size:10.5px;color:var(--mut2);margin-top:auto}
+  .dir .supp b{color:var(--mut)}
+
+  /* arch + booking */
+  .cols{display:grid;grid-template-columns:1.25fr 1fr;gap:34px}
+  @media(max-width:820px){.cols{grid-template-columns:1fr}}
+  ol.arch{counter-reset:a;list-style:none}
+  ol.arch li{counter-increment:a;position:relative;padding:10px 0 10px 40px;border-bottom:1px solid var(--line);font-size:13.5px}
+  ol.arch li::before{content:counter(a,decimal-leading-zero);position:absolute;left:0;top:10px;font-family:Cinzel,serif;color:var(--gold);font-size:12px}
+  ol.arch li b{color:var(--ink);font-weight:600} ol.arch li span{color:var(--mut2);font-size:12px}
+  .book{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .book h4{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:11px}
+  .book p{font-size:13px;color:var(--mut);margin-bottom:10px}
+  .branchrow{display:flex;gap:10px;margin-top:12px}
+  .branch{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:13px;text-align:center}
+  .branch .b{font-weight:600;font-size:12.5px} .branch .s{font-size:10px;color:var(--mut2);margin-top:3px}
+  .branch .cta{margin-top:9px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#1a1405;background:var(--gold);border-radius:6px;padding:7px 0;font-weight:700}
+
+  /* menu */
+  .menu{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:820px){.menu{grid-template-columns:1fr}}
+  .mcard{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:16px 18px}
+  .mcard h4{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  .mrow{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px dotted var(--line);color:var(--mut)}
+  .mrow b{color:var(--ink);font-weight:600}
+  .mcard .cur{font-size:10px;color:var(--mut2);margin-top:10px}
+
+  /* decisions */
+  .decide{background:linear-gradient(180deg,#14110c,#0a0a0b);border-top:1px solid var(--brass)}
+  .qs{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+  @media(max-width:760px){.qs{grid-template-columns:1fr}}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .q .ql{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+  .q .qt{font-size:14.5px;font-weight:600;margin-bottom:11px}
+  .q .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .opt{font-size:12px;color:var(--mut);border:1px solid var(--line);border-radius:30px;padding:7px 13px}
+  .opt.pick{border-color:var(--gold);color:var(--gold-lite);background:rgba(216,178,90,.08)}
+  footer{padding:36px 0 70px;color:var(--mut2);font-size:11px;text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+
+<header><div class="wrap hrow">
+  <img src="site-grab/2024_12_Site-Logo-300x300.png" alt="Leo'z">
+  <div class="t">LEOZ · <b>DESIGN DIRECTION</b></div>
+  <nav>
+    <a href="#brand">Brand</a><a href="#words">Their words</a><a href="#look">Look</a>
+    <a href="#refs">Bar</a><a href="#cross">Beyond</a><a href="#dirs">Directions</a><a href="#menu">Menu</a><a href="#decide">Your call</a>
+  </nav>
+</div></header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="bg"></div><div class="veil"></div>
+  <div class="wrap in">
+    <img class="lion" src="site-grab/2024_12_Site-Logo-300x300.png" alt="">
+    <div class="eye">Propagenda × Leoz Gents Salon · concept website</div>
+    <h1>A king's<br>grooming.</h1>
+    <div class="sub">The direction for Leoz's new site — built from their <b style="color:var(--gold-lite)">own</b> brand (the gold lion, the crown, the marble-and-gold salon) and from how the best barbershops in the world build their sites. Pick a lane and I build the hero comp.</div>
+    <div class="meta">
+      <span><b>Client</b> Leoz Gents Salon · Dubai</span>
+      <span><b>Branches</b> Palm Jumeirah · Sky Gardens</span>
+      <span><b>Scope</b> Brand · bilingual site · Fresha · retainer</span>
+      <span><b>Lang</b> EN + AR</span>
+    </div>
+  </div>
+</div>
+
+<!-- NORTH STAR -->
+<section id="north" class="decide">
+ <div class="wrap">
+  <div class="kicker">Locked · your top three</div>
+  <h2><span class="brk">The North Star</span></h2>
+  <p class="lead">You picked these three — together they define the concept. Each hands us one layer:</p>
+  <div class="refs">
+    <div class="ref"><div class="n">Louis&nbsp;XIII <span class="rank">the ritual</span></div><div class="steal">Slow, reverent, gold-on-black <b style="color:var(--gold-lite)">restraint</b> — the shave as a ceremony. Generous black space, cinematic hush. Never busy.</div></div>
+    <div class="ref"><div class="n">Truefitt&nbsp;&amp;&nbsp;Hill <span class="rank">the heritage</span></div><div class="steal">Royal-warrant <b style="color:var(--gold-lite)">gravitas</b> — the crown &amp; the lion, "grooming for greatness," old-world authority and trust.</div></div>
+    <div class="ref"><div class="n">Barbury <span class="rank">the structure</span></div><div class="steal">The working dark-barber site — full-bleed hero, oversized wordmark, <b style="color:var(--gold-lite)">walk-in + Book</b>, signature packages.</div></div>
+  </div>
+  <p class="lead" style="margin-top:24px;font-size:15.5px;color:var(--ink)">Synthesis → <b style="color:var(--gold-lite)">Direction B · The Lion, refined</b>: Barbury's dark-cinematic barber <b>structure</b>, executed with Louis&nbsp;XIII's ritual <b>restraint</b> and Truefitt's royal-heritage <b>gravitas</b> — on Leoz's own gold-on-black lion-and-crown brand. Concept line: <b style="color:var(--gold-lite)">"A king's grooming."</b></p>
+ </div>
+</section>
+
+<!-- BRAND TRUTH -->
+<section id="brand" class="wrap">
+  <div class="kicker">What the brand already is</div>
+  <h2><span class="brk">The brand truth</span></h2>
+  <p class="lead">We're not inventing a look — Leoz already has a strong one, running across their salon, signage, print and social. Our job is to carry it to the web and elevate it. The organizing idea is already theirs: <b style="color:var(--gold-lite)">the lion · the crown · the royal treatment.</b></p>
+  <div class="grid2">
+    <div>
+      <ul class="facts">
+        <li><b>Identity</b> Gold lion mark (Leo = lion) + "Leoz / GENTS SALON" lockup. The crowned-lion statue is in the salon.</li>
+        <li><b>The space</b> Charcoal + grey marble + warm wood, amber light, green leather, burnt-orange accents, backlit onyx mirrors.</li>
+        <li><b>Positioning</b> "Redefining men's grooming — luxury, precision, individualized care, for the modern gentleman."</li>
+        <li><b>Signature</b> The hot-towel / royal shave ritual — "routine grooming into a truly indulgent experience."</li>
+        <li><b>Since</b> 2012 · two Dubai branches · booking on Fresha (live).</li>
+        <li><b>Today's site</b> A WordPress/Elementor template — far below the brand. That's the gap we close.</li>
+      </ul>
+      <div class="sub-h">Palette &amp; materials — sampled from their own assets</div>
+      <div class="pal-row">
+        <div class="sw" style="background:#0a0a0b"><span>near-black</span></div>
+        <div class="sw" style="background:#16151a"><span>charcoal</span></div>
+        <div class="sw" style="background:#8d8a86"><span>marble</span></div>
+        <div class="sw" style="background:#b8863b"><span>brass</span></div>
+        <div class="sw" style="background:#d8b25a"><span>gold</span></div>
+        <div class="sw" style="background:#ecd79b"><span>gold-lite</span></div>
+        <div class="sw" style="background:#203a33"><span>green leather</span></div>
+        <div class="sw" style="background:#b85c2a"><span>burnt-orange</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="type-demo">
+        <div class="lockup">
+          <div class="word">Leoz</div>
+          <div class="gents">GENTS SALON</div>
+        </div>
+        <div class="r"><b>Type system (extends their print):</b> their section heads are bold, wide-tracked uppercase with gold <span class="brk" style="padding:0 10px">corner brackets</span>; the wordmark is a soft custom script; "GENTS SALON" is an engraved serif.</div>
+        <div class="r"><b>On the web:</b> an engraved serif (Cinzel) for flourish + a clean geometric sans (Poppins) for headings &amp; body + the gold-bracket motif + their lion/crown marks. EN pairs with a matching Arabic face for AR.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THEIR WORDS -->
+<section id="words" class="wrap">
+  <div class="kicker">In their own words</div>
+  <h2><span class="brk">Voice &amp; values</span></h2>
+  <p class="lead">Straight from the Leoz company profile — this is the copy and the value set the site should speak in.</p>
+  <div class="words">
+    <div class="word-card">
+      <div class="wl">Overview</div>
+      <p><span class="big">"Leoz Gents Salon redefines men's grooming with an unwavering focus on luxury, precision, and individualized care"</span> — catering to the modern gentleman who demands excellence, blending traditional techniques with cutting-edge innovation and premium tools.</p>
+    </div>
+    <div class="word-card">
+      <div class="wl">Story &amp; vision</div>
+      <p>"Founded on the belief that men deserve a dedicated space for grooming and self-care… our vision is to become <b style="color:var(--gold-lite)">the leading men's salon in the region</b>, transforming routine grooming into a truly indulgent experience."</p>
+    </div>
+    <div class="word-card">
+      <div class="wl">Mission &amp; values</div>
+      <p>Personalized Care · Excellence in Service · Client-Centric Atmosphere · Quality &amp; Luxury.</p>
+      <div class="vals"><span>Comfort</span><span>Style</span><span>Quality</span><span>Luxury</span><span>Modernity</span></div>
+    </div>
+    <div class="word-card">
+      <div class="wl">Taglines in play</div>
+      <p><span class="big">"Great Style. Great Haircuts. Awesome Barbers."</span><br>+ our concept line: <b style="color:var(--gold-lite)">"A king's grooming."</b> — the lion &amp; crown made the hero idea.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LOOK -->
+<section id="look" class="wrap">
+  <div class="kicker">Their real look</div>
+  <h2><span class="brk">The photography is already there</span></h2>
+  <p class="lead">Propagenda already shot Leoz — dark, warm, premium interiors + gold tools. The concept uses <b style="color:var(--gold-lite)">real Leoz photography</b>, not stock. (Hero portraits from the full shoot are downloading now.)</p>
+  <div class="shots">
+    <figure><img src="assets/tile-station.jpg" alt=""><figcaption>Onyx mirror station</figcaption></figure>
+    <figure><img src="assets/tile-reception.jpg" alt=""><figcaption>Lion reception</figcaption></figure>
+    <figure><img src="assets/tile-lounge.jpg" alt=""><figcaption>Stone-wall lounge</figcaption></figure>
+    <figure><img src="assets/tile-corridor.jpg" alt=""><figcaption>The floor</figcaption></figure>
+    <figure><img src="assets/tools-gold.jpg" alt=""><figcaption>Gold tools</figcaption></figure>
+  </div>
+  <p class="note">Values the brand photographs around: <b style="color:var(--mut)">Comfort · Style · Quality · Luxury · Modernity</b>.</p>
+</section>
+
+<!-- REFERENCES -->
+<section id="refs" class="wrap">
+  <div class="kicker">The outside bar</div>
+  <h2><span class="brk">Six references, verified live</span></h2>
+  <p class="lead">Rendered in a real browser — fonts/colors pulled from the live DOM. The build-quality bar and the moves worth borrowing.</p>
+  <div class="refs">
+    <div class="ref"><div class="n">Barbury <span class="rank">01</span></div><div class="chips"><i class="chip" style="background:#0a0a0a"></i><i class="chip" style="background:#fff"></i></div><div class="steal"><em>Steal:</em> dark cinematic hero, oversized wordmark, "Est. 2012" badge, walk-in + book dual CTA, signature packages.</div><a href="https://www.jetmirs.ch" target="_blank">jetmirs.ch ↗</a></div>
+    <div class="ref"><div class="n">Pall Mall Barbers <span class="rank">02</span></div><div class="chips"><i class="chip" style="background:#fff"></i><i class="chip" style="background:#333"></i></div><div class="steal"><em>Steal:</em> engraved serif headline + clean sans body, a "since 2012" heritage line, book-everywhere discipline.</div><a href="https://www.pallmallbarbers.com" target="_blank">pallmallbarbers.com ↗</a></div>
+    <div class="ref"><div class="n">Murdock London <span class="rank">03</span></div><div class="chips"><i class="chip" style="background:#031D40"></i><i class="chip" style="background:#F2F2F2"></i></div><div class="steal"><em>Steal:</em> a Journal layer (the royal-shave ritual, grooming tips) that lifts a shop above a template.</div><a href="https://www.murdocklondon.com" target="_blank">murdocklondon.com ↗</a></div>
+    <div class="ref"><div class="n">Fellow Barber <span class="rank">04</span></div><div class="chips"><i class="chip" style="background:#fff"></i><i class="chip" style="background:#363636"></i></div><div class="steal"><em>Steal:</em> the branch-picker booking (choose location → book) — maps straight to our two branches.</div><a href="https://www.fellowbarber.com" target="_blank">fellowbarber.com ↗</a></div>
+    <div class="ref"><div class="n">Blind Barber <span class="rank">05</span></div><div class="chips"><i class="chip" style="background:#1a1a1a"></i><i class="chip" style="background:#bcd4e6"></i></div><div class="steal"><em>Steal:</em> experiential storytelling (the ritual &amp; atmosphere) + tasteful scroll/video motion.</div><a href="https://blindbarber.com" target="_blank">blindbarber.com ↗</a></div>
+    <div class="ref"><div class="n">Ruffians <span class="rank">06</span></div><div class="chips"><i class="chip" style="background:#121212"></i><i class="chip" style="background:#fff"></i><i class="chip" style="background:#2d6cdf"></i></div><div class="steal"><em>Steal:</em> location-tile booking block + an "as seen in / awards" social-proof strip.</div><a href="https://ruffians.co.uk" target="_blank">ruffians.co.uk ↗</a></div>
+  </div>
+  <p class="note">Finding: premium grooming in Dubai (Il Padrino, 1847, Acqua di Parma Barbiere) mostly has <b style="color:var(--mut)">no custom site — just Fresha/directory listings</b>. A real bespoke site is itself Leoz's differentiator.</p>
+</section>
+
+<!-- CROSS-NICHE -->
+<section id="cross" class="wrap">
+  <div class="kicker">Thinking outside the niche</div>
+  <h2><span class="brk">Luxury houses, not barbershops</span></h2>
+  <p class="lead">Dark + gold + regal isn't a barbershop language — it's a <b style="color:var(--gold-lite)">luxury-maison</b> language. These six (cognac, whisky, motorcars, fragrance, watchmaking, grooming) show how to make Leoz feel like a house, not a salon template — and each hands us one specific move.</p>
+  <div class="refs">
+    <div class="ref">
+      <div class="n">Louis&nbsp;XIII <span class="rank">Cognac</span></div>
+      <div class="chips"><i class="chip" style="background:#0a0a0a"></i><i class="chip" style="background:#caa24e"></i></div>
+      <div class="steal"><em>Steal:</em> a simple act made sacred — the <b>ritual</b> treatment + absolute gold-on-black restraint + a heritage-of-time story. → make the <b style="color:var(--gold-lite)">royal shave feel like a rite</b>, not a haircut.</div>
+      <a href="https://www.louisxiii-cognac.com" target="_blank">louisxiii-cognac.com ↗</a>
+    </div>
+    <div class="ref">
+      <div class="n">The Macallan <span class="rank">Whisky</span></div>
+      <div class="chips"><i class="chip" style="background:#160f0a"></i><i class="chip" style="background:#b9842f"></i></div>
+      <div class="steal"><em>Steal:</em> immersive <b>scroll storytelling of craft</b>, warm dark + gold, cinematic chapters. → tell the craft of the cut &amp; shave the same way.</div>
+      <a href="https://www.themacallan.com" target="_blank">themacallan.com ↗</a>
+    </div>
+    <div class="ref">
+      <div class="n">Rolls-Royce <span class="rank">Motorcars</span></div>
+      <div class="chips"><i class="chip" style="background:#0b0b0d"></i><i class="chip" style="background:#d8c9a0"></i></div>
+      <div class="steal"><em>Steal:</em> <b>bespoke, made-for-you</b> framing + a regal figurehead (Spirit of Ecstasy). → Leoz's <b style="color:var(--gold-lite)">lion as the figurehead</b>; "bespoke grooming."</div>
+      <a href="https://www.rolls-roycemotorcars.com" target="_blank">rolls-roycemotorcars.com ↗</a>
+    </div>
+    <div class="ref">
+      <div class="n">Amouage <span class="rank">Fragrance · Oman</span></div>
+      <div class="chips"><i class="chip" style="background:#0e0b16"></i><i class="chip" style="background:#c9a24e"></i></div>
+      <div class="steal"><em>Steal:</em> <b>Arabian luxury codes</b> in gold — opulent yet tasteful, built for a bilingual world. → the exact cultural register for a Dubai <b style="color:var(--gold-lite)">EN/AR</b> site.</div>
+      <a href="https://www.amouage.com" target="_blank">amouage.com ↗</a>
+    </div>
+    <div class="ref">
+      <div class="n">Jaeger-LeCoultre <span class="rank">Watchmaking</span></div>
+      <div class="chips"><i class="chip" style="background:#0a0e14"></i><i class="chip" style="background:#c7a24e"></i></div>
+      <div class="steal"><em>Steal:</em> <b>precision &amp; craftsmanship</b> storytelling, macro detail on metal. → mirrors Leoz's "precision" value and their <b style="color:var(--gold-lite)">gold tools</b>.</div>
+      <a href="https://www.jaeger-lecoultre.com" target="_blank">jaeger-lecoultre.com ↗</a>
+    </div>
+    <div class="ref">
+      <div class="n">Tom Ford <span class="rank">Grooming</span></div>
+      <div class="chips"><i class="chip" style="background:#000"></i><i class="chip" style="background:#caa24e"></i></div>
+      <div class="steal"><em>Steal:</em> <b>black + gold, masculine, editorial</b> — sexy and confident. → the closest actual <b style="color:var(--gold-lite)">palette</b> to Leoz among these, in a grooming context.</div>
+      <a href="https://www.tomfordbeauty.com" target="_blank">tomfordbeauty.com ↗</a>
+    </div>
+  </div>
+  <p class="note">The through-line: all six take something ordinary and frame it as a <b style="color:var(--mut)">rite with heritage</b>. That's the move for the royal shave — and it's native to Leoz's lion-and-crown world.</p>
+</section>
+
+<!-- DIRECTIONS -->
+<section id="dirs" class="wrap">
+  <div class="kicker">Pick a lane</div>
+  <h2><span class="brk">Three directions — all on Leoz's own brand</span></h2>
+  <p class="lead">Same gold-on-dark DNA; they differ in how far we push cinematic vs. editorial, and which type voice leads. My pick is <b style="color:var(--gold-lite)">The Lion</b>.</p>
+  <div class="dirs">
+
+    <div class="dir">
+      <div class="specimen sp1"><div class="big">Leoz</div><div class="small">Gents Salon · Est. 2012</div></div>
+      <div class="body">
+        <h3>A · The Gentleman</h3>
+        <div class="tag">heritage · closest to their print</div>
+        <p>Their gold-bracket system, engraved-serif section heads, warm editorial calm. Instantly reads as Leoz — the safest, most faithful translation of the profile &amp; price-list language.</p>
+        <div class="pal"><i style="background:#0a0a0b"></i><i style="background:#16151a"></i><i style="background:#b8863b"></i><i style="background:#d8b25a"></i></div>
+        <div class="supp"><b>Nearest ref:</b> Pall Mall · Murdock</div>
+      </div>
+    </div>
+
+    <div class="dir rec">
+      <div class="badge">Recommended</div>
+      <div class="specimen sp2"><div class="big">LEOZ</div><div class="small">A king's grooming</div></div>
+      <div class="body">
+        <h3>B · The Lion</h3>
+        <div class="tag">dark cinematic · motion-led</div>
+        <p>Full-bleed cinematic hero from their real reels, an oversized wordmark, the lion &amp; crown as signature, scroll/video motion, one gold accent. Most striking — turns the brand they already own into a statement site.</p>
+        <div class="pal"><i style="background:#000"></i><i style="background:#131316"></i><i style="background:#d8b25a"></i><i style="background:#f4f1ec"></i></div>
+        <div class="supp"><b>Nearest ref:</b> Barbury · Blind Barber</div>
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="specimen sp3"><div class="big">Leoz</div><div class="small">The modern gentleman</div></div>
+      <div class="body">
+        <h3>C · The Modern Gentleman</h3>
+        <div class="tag">lighter · editorial luxe</div>
+        <p>Lets the marble &amp; onyx breathe — more light space, airy editorial layout, high-key lifestyle shots, a strong journal. Feels international luxury-retail; a bigger departure from the current dark mood.</p>
+        <div class="pal"><i style="background:#13110d"></i><i style="background:#e9e6df"></i><i style="background:#d8b25a"></i><i style="background:#8d8a86"></i></div>
+        <div class="supp"><b>Nearest ref:</b> Murdock · Fellow</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ARCH + BOOKING -->
+<section id="arch" class="wrap">
+  <div class="kicker">How it's built</div>
+  <h2><span class="brk">The concept's sections</span></h2>
+  <p class="lead">The order the best shops converge on — adapted for Leoz's two branches, the full salon menu, and the royal-shave ritual.</p>
+  <div class="cols">
+    <ol class="arch">
+      <li><b>Sticky header</b> — logo · slim nav · persistent <span>Book + phone</span></li>
+      <li><b>Cinematic hero</b> — wordmark · "Est. 2012" · Book CTA <span>(+ walk-ins welcome)</span></li>
+      <li><b>The story</b> — "redefining the traditional barbershop experience"</li>
+      <li><b>Services</b> — Haircuts &amp; Shaving · Facial · Body · Mani/Pedi · <span>Massage</span></li>
+      <li><b>The ritual</b> — the royal shave / hot-towel · the differentiator</li>
+      <li><b>Pricing</b> — the real Leoz price list</li>
+      <li><b>Gallery</b> — the craft &amp; the salon (real shoot)</li>
+      <li><b>Social proof</b> — Google reviews + press/awards</li>
+      <li><b>Locations</b> — Palm Jumeirah &amp; Sky Gardens · map · hours · own Book link</li>
+      <li><b>Footer</b> — hours · contact · social · newsletter</li>
+    </ol>
+    <div class="book">
+      <h4>Booking · the Fresha pattern</h4>
+      <p>Every premium shop styles its own "Book" button and deep-links to an external provider. For Leoz that's <b style="color:var(--gold-lite)">Fresha</b> — one styled CTA, one tap away, with a two-branch picker.</p>
+      <div class="branchrow">
+        <div class="branch"><div class="b">Palm Jumeirah</div><div class="s">10:00 – 24:00</div><div class="cta">Book</div></div>
+        <div class="branch"><div class="b">Sky Gardens</div><div class="s">10:00 – 24:00</div><div class="cta">Book</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu" class="wrap">
+  <div class="kicker">Grounded in reality</div>
+  <h2><span class="brk">The real menu</span></h2>
+  <p class="lead">From the official Leoz price list — it's a full gents salon, not only a barbershop. Sample of each category (AED).</p>
+  <div class="menu">
+    <div class="mcard"><h4>Haircuts &amp; Shaving</h4>
+      <div class="mrow"><span>Haircut</span><b>145</b></div>
+      <div class="mrow"><span>Beard</span><b>90</b></div>
+      <div class="mrow"><span>Head shave</span><b>110</b></div>
+      <div class="mrow"><span>Hot oil treatment</span><b>220</b></div>
+      <div class="mrow"><span>Hair treatment blow out</span><b>385</b></div>
+      <div class="cur">+ kids, colour, threading, waxing…</div>
+    </div>
+    <div class="mcard"><h4>Facial &amp; Skin</h4>
+      <div class="mrow"><span>Face scrubs</span><b>110</b></div>
+      <div class="mrow"><span>Express facial</span><b>165</b></div>
+      <div class="mrow"><span>Facial hyaluronic</span><b>385</b></div>
+      <div class="mrow"><span>Facial power C</span><b>495</b></div>
+      <div class="cur">the indulgent end of the menu</div>
+    </div>
+    <div class="mcard"><h4>Massage &amp; Body</h4>
+      <div class="mrow"><span>Relaxing massage</span><b>275</b></div>
+      <div class="mrow"><span>Deep tissue</span><b>385</b></div>
+      <div class="mrow"><span>Hot stone</span><b>495</b></div>
+      <div class="mrow"><span>Mani / Pedi</span><b>110–130</b></div>
+      <div class="cur">+ full body treatment &amp; waxing</div>
+    </div>
+  </div>
+</section>
+
+<!-- DECISIONS -->
+<section id="decide" class="decide">
+ <div class="wrap">
+  <div class="kicker">Your call</div>
+  <h2><span class="brk">Four decisions and I build the hero</span></h2>
+  <p class="lead">Tell me in chat — or say "go with the recommendation" and I run with the gold-marked picks.</p>
+  <div class="qs">
+    <div class="q"><div class="ql">01 · Direction</div><div class="qt">Which lane?</div>
+      <div class="opts"><span class="opt pick">B · The Lion (rec.)</span><span class="opt">A · The Gentleman</span><span class="opt">C · Modern Gentleman</span></div></div>
+    <div class="q"><div class="ql">02 · Name on the site</div><div class="qt">Their usage is mixed — which leads?</div>
+      <div class="opts"><span class="opt pick">Leoz Gents Salon</span><span class="opt">Leoz Barber</span><span class="opt">Just "LEOZ"</span></div></div>
+    <div class="q"><div class="ql">03 · Scope of the concept comp</div><div class="qt">How much do I build for sign-off?</div>
+      <div class="opts"><span class="opt pick">Full homepage (long scroll)</span><span class="opt">Hero + 2 sections only</span></div></div>
+    <div class="q"><div class="ql">04 · Menu depth</div><div class="qt">Show the whole salon menu, or lead barber-first?</div>
+      <div class="opts"><span class="opt pick">Barber-first, salon below</span><span class="opt">Full salon menu equally</span></div></div>
+  </div>
+ </div>
+</section>
+
+<footer>
+  Propagenda · Leoz Gents Salon concept — design direction · built 2026-10-16<br>
+  Brand palette, voice, values, photography &amp; menu sourced from the Leoz Drive (company profile, price list, photo shoots) · web references verified live in-browser.
+</footer>
+
+</body>
+</html>

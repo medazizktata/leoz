@@ -1,0 +1,16 @@
+# OS
+.DS_Store
+
+# Node / build output
+node_modules/
+dist/
+dist-pages/
+host-dist/
+
+# Heavy source originals — live in the propagendamarketing Google Drive,
+# repullable with rclone (see README). Not committed.
+brand/drive/
+brand/photos/
+
+# scratch
+*.log
