@@ -6,6 +6,17 @@ import { BookingProvider, useBooking, type Prefill } from "./components/Booking"
 const FRESHA = "https://www.fresha.com/book-now/leo-barbershop-gh2f7o6x"
 const img = (n: string) => `/img/${n}`
 
+// smooth-scroll in-page anchors via Lenis (offset for the fixed header), with a native fallback
+function smoothScroll(e: { preventDefault(): void }, href: string) {
+  if (!href.startsWith("#")) return
+  e.preventDefault()
+  const el = href === "#top" ? null : document.querySelector(href)
+  const y = href === "#top" ? 0 : el ? el.getBoundingClientRect().top + window.scrollY - 80 : 0 // 80 = fixed header
+  const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis
+  if (lenis) lenis.scrollTo(y, { duration: 1.2 })
+  else window.scrollTo({ top: y, behavior: "smooth" })
+}
+
 function Reveal({ children, delay = 0, y = 28, className = "" }: { children: ReactNode; delay?: number; y?: number; className?: string }) {
   return (
     <motion.div className={className} initial={{ opacity: 0, y }} whileInView={{ opacity: 1, y: 0 }}
@@ -52,11 +63,11 @@ function Header() {
     <>
       <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${solid ? "border-b border-line bg-night/90 backdrop-blur-md" : "border-b border-transparent"}`}>
         <div className="mx-auto flex h-20 max-w-[1320px] items-center gap-6 px-5 sm:px-8 lg:px-14">
-          <a href="#top" aria-label="Leoz Gents Salon — home" className="flex shrink-0 items-center">
+          <a href="#top" onClick={(e) => smoothScroll(e, "#top")} aria-label="Leoz Gents Salon — home" className="flex shrink-0 items-center">
             <img src={img("lion-gold.png")} alt="Leoz Gents Salon" className="h-12 w-auto" />
           </a>
           <nav className="ml-auto hidden items-center gap-9 lg:flex">
-            {links.map(([h, t]) => (<a key={h} href={h} className="text-[12.5px] tracking-wide text-mut transition-colors hover:text-gold-lite">{t}</a>))}
+            {links.map(([h, t]) => (<a key={h} href={h} onClick={(e) => smoothScroll(e, h)} className="text-[12.5px] tracking-wide text-mut transition-colors hover:text-gold-lite">{t}</a>))}
           </nav>
           <div className="ml-auto lg:ml-9"><BookBtn className="hidden lg:inline-flex">Book</BookBtn></div>
           <button className="ml-auto inline-flex h-11 w-11 items-center justify-center text-ink lg:hidden" aria-label="Open menu" onClick={() => setOpen(true)}><MenuIcon size={24} /></button>
@@ -64,7 +75,7 @@ function Header() {
       </header>
       <div className={`fixed inset-0 z-[60] flex flex-col items-center justify-center gap-2 bg-[#060504]/98 backdrop-blur transition-opacity duration-300 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}>
         <button className="absolute right-6 top-6 h-11 w-11 text-ink" aria-label="Close menu" onClick={() => setOpen(false)}><X size={26} /></button>
-        {links.map(([h, t]) => (<a key={h} href={h} onClick={() => setOpen(false)} className="p-3 text-2xl font-light tracking-wide text-ink hover:text-gold-lite">{t}</a>))}
+        {links.map(([h, t]) => (<a key={h} href={h} onClick={(e) => { smoothScroll(e, h); setOpen(false) }} className="p-3 text-2xl font-light tracking-wide text-ink hover:text-gold-lite">{t}</a>))}
         <div className="mt-5"><BookBtn>Book your chair</BookBtn></div>
       </div>
     </>
@@ -92,7 +103,7 @@ function Hero() {
           <span className="text-[12.5px] text-mut">or <span className="font-medium text-ink">walk in</span> — open till midnight, daily.</span>
         </motion.div>
       </div>
-      <a href="#experience" className="absolute bottom-7 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-mut2" aria-label="Scroll">
+      <a href="#experience" onClick={(e) => smoothScroll(e, "#experience")} className="absolute bottom-7 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-mut2" aria-label="Scroll">
         <motion.svg width="15" height="24" viewBox="0 0 16 24" fill="none" stroke="currentColor" strokeWidth="1.4" animate={{ y: [0, 5, 0] }} transition={{ duration: 2.4, repeat: Infinity }}><path d="M8 2v18M3 15l5 5 5-5" /></motion.svg>
       </a>
     </section>
