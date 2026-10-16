@@ -12,5 +12,9 @@ host-dist/
 brand/drive/
 brand/photos/
 
+# derived / re-generatable
+brand/propaganda-brand/
+.impeccable/
+
 # scratch
 *.log
