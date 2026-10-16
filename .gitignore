@@ -19,3 +19,5 @@ brand/propaganda-brand/
 # scratch
 *.log
 poc/.trash/
+poc-app/.trash/
+package-lock.json

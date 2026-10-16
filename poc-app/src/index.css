@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Poppins", system-ui, sans-serif;
+
+  --color-night: #0a0908;
+  --color-char: #14110b;
+  --color-char2: #1c1810;
+  --color-line: #2b2619;
+  --color-line2: #3c3524;
+  --color-ink: #f5f2ec;
+  --color-mut: #b3aea4;
+  --color-mut2: #8f8b80;
+  --color-gold: #d9b45a;
+  --color-gold-lite: #fcca6e;
+  --color-gold-deep: #886703;
+  --color-brass: #a8822f;
+}
+
+:root { color-scheme: dark; }
+* { -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--color-night);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* browser surfaces themed to the brand */
+::selection { background: var(--color-gold); color: #17120a; }
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: #060504; }
+::-webkit-scrollbar-thumb { background: #38311f; border-radius: 20px; border: 3px solid #060504; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-brass); }
+html { scrollbar-color: #38311f #060504; caret-color: var(--color-gold); }
+:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
+
+/* the brand's metallic gold, for display type */
+.gold-grad {
+  background: linear-gradient(104deg, #8a6a12 0%, #d9a93f 32%, #fcca6e 50%, #d9a93f 68%, #8a6a12 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+/* the brand's gold corner-bracket motif */
+.brk { position: relative; display: inline-block; padding: 6px 30px; }
+.brk::before, .brk::after { content: ""; position: absolute; width: 20px; height: 16px; border: 2px solid var(--color-gold); }
+.brk::before { left: 0; top: -7px; border-right: 0; border-bottom: 0; }
+.brk::after { right: 0; bottom: -7px; border-left: 0; border-top: 0; }
+
+.lbl { font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase; }
