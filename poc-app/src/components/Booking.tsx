@@ -1,6 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { Check, X } from "lucide-react"
+import { Check, X, Calendar as CalendarIcon } from "lucide-react"
+import { format } from "date-fns"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
 
 const WHATSAPP = "971581782418"
 const FRESHA = "https://www.fresha.com/book-now/leo-barbershop-gh2f7o6x"
@@ -18,11 +22,12 @@ const SERVICES: [string, string[]][] = [
   ["Manicure & Pedicure", ["Manicure", "Pedicure"]],
 ]
 const TIMES = (() => { const t: string[] = []; for (let h = 10; h < 24; h++) for (const m of ["00", "30"]) t.push(`${String(h).padStart(2, "0")}:${m}`); return t })()
-const todayStr = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10) }
+const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d }
 
-const field = "w-full rounded-sm border border-line2 bg-char2 px-3.5 py-3 text-[14px] text-ink outline-none transition-colors focus:border-gold [color-scheme:dark]"
+const field = "w-full rounded-sm border border-line2 bg-char2 px-3.5 py-3 text-[14px] text-ink outline-none transition-colors focus:border-gold placeholder:text-mut2"
 const label = "mb-1.5 block text-[10.5px] uppercase tracking-[0.16em] text-mut"
 const errCls = "mt-1 text-[11px] text-[#e3a07e]"
+const errBorder = "border-[#c9765a]"
 const goldBtn: React.CSSProperties = { backgroundImage: "linear-gradient(104deg,#8a6a12,#d9a93f 32%,#fcca6e 50%,#d9a93f 68%,#8a6a12)", backgroundSize: "180% 100%", backgroundPosition: "0 0" }
 
 export function BookingProvider({ children }: { children: ReactNode }) {
@@ -38,18 +43,24 @@ export function BookingProvider({ children }: { children: ReactNode }) {
 }
 
 function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose: () => void }) {
-  const empty = { name: "", phone: "", branch: "", service: "", date: "", time: "", notes: "" }
+  const empty = { name: "", phone: "", branch: "", service: "", time: "", notes: "" }
   const [form, setForm] = useState(empty)
+  const [date, setDate] = useState<Date | undefined>(undefined)
+  const [dateOpen, setDateOpen] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [done, setDone] = useState(false)
 
   useEffect(() => {
-    if (open) { setForm({ ...empty, branch: pref.branch || "", service: pref.service || "" }); setErrors({}); setDone(false) }
+    if (open) { setForm({ ...empty, branch: pref.branch || "", service: pref.service || "" }); setDate(undefined); setDateOpen(false); setErrors({}); setDone(false) }
   }, [open, pref]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return
+      if (document.querySelector("[data-radix-popper-content-wrapper]")) return // let an open Select/Popover handle Esc first
+      onClose()
+    }
     document.addEventListener("keydown", onKey)
     const prev = document.body.style.overflow; document.body.style.overflow = "hidden"
     return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev }
@@ -63,15 +74,15 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
     if (form.phone.replace(/\D/g, "").length < 7) e.phone = "Enter a valid phone number."
     if (!form.branch) e.branch = "Choose a branch."
     if (!form.service) e.service = "Choose a service."
-    if (!form.date) e.date = "Pick a date."
-    else if (form.date < todayStr()) e.date = "Date can't be in the past."
+    if (!date) e.date = "Pick a date."
     if (!form.time) e.time = "Pick a time."
     setErrors(e)
     return Object.keys(e).length === 0
   }
 
+  const dateLabel = date ? format(date, "EEE, d MMM yyyy") : ""
   function waUrl() {
-    const msg = `Booking request — Leoz Gents Salon\n\nName: ${form.name}\nPhone: ${form.phone}\nBranch: ${form.branch}\nService: ${form.service}\nDate: ${form.date}\nTime: ${form.time}${form.notes ? `\nNotes: ${form.notes}` : ""}`
+    const msg = `Booking request — Leoz Gents Salon\n\nName: ${form.name}\nPhone: ${form.phone}\nBranch: ${form.branch}\nService: ${form.service}\nDate: ${dateLabel}\nTime: ${form.time}${form.notes ? `\nNotes: ${form.notes}` : ""}`
     return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`
   }
   function submit(ev: FormEvent) {
@@ -96,7 +107,7 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-gold text-gold-lite"><Check size={30} /></div>
                 <h3 className="text-[25px] font-light">Thank you, {form.name.trim().split(" ")[0]}.</h3>
                 <p className="mx-auto mt-3 max-w-sm text-[14px] font-light leading-relaxed text-mut">
-                  We've opened WhatsApp to confirm your <span className="text-gold-lite">{form.service}</span> at <span className="text-gold-lite">{form.branch}</span> on {form.date} at {form.time}. Our team will reply shortly.
+                  We've opened WhatsApp to confirm your <span className="text-gold-lite">{form.service}</span> at <span className="text-gold-lite">{form.branch}</span> on {dateLabel} at {form.time}. Our team will reply shortly.
                 </p>
                 <div className="mt-8 flex flex-col items-center gap-4">
                   <a href={waUrl()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-sm px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-[#1a1205]" style={goldBtn}>Open WhatsApp again</a>
@@ -122,42 +133,54 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label className={label} htmlFor="bk-branch">Branch</label>
-                      <select id="bk-branch" className={field} value={form.branch} onChange={(e) => set("branch", e.target.value)}>
-                        <option value="">Select a branch</option>
-                        {BRANCHES.map((b) => <option key={b} value={b}>{b}</option>)}
-                      </select>
+                      <label className={label}>Branch</label>
+                      <Select value={form.branch} onValueChange={(v) => set("branch", v)}>
+                        <SelectTrigger className={errors.branch ? errBorder : ""} aria-label="Branch"><SelectValue placeholder="Select a branch" /></SelectTrigger>
+                        <SelectContent>{BRANCHES.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent>
+                      </Select>
                       {errors.branch && <p className={errCls}>{errors.branch}</p>}
                     </div>
                     <div>
-                      <label className={label} htmlFor="bk-service">Service</label>
-                      <select id="bk-service" className={field} value={form.service} onChange={(e) => set("service", e.target.value)}>
-                        <option value="">Select a service</option>
-                        {SERVICES.map(([g, items]) => (
-                          <optgroup key={g} label={g}>{items.map((s) => <option key={s} value={s}>{s}</option>)}</optgroup>
-                        ))}
-                      </select>
+                      <label className={label}>Service</label>
+                      <Select value={form.service} onValueChange={(v) => set("service", v)}>
+                        <SelectTrigger className={errors.service ? errBorder : ""} aria-label="Service"><SelectValue placeholder="Select a service" /></SelectTrigger>
+                        <SelectContent>
+                          {SERVICES.map(([g, items]) => (
+                            <SelectGroup key={g}><SelectLabel>{g}</SelectLabel>{items.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectGroup>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       {errors.service && <p className={errCls}>{errors.service}</p>}
                     </div>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label className={label} htmlFor="bk-date">Date</label>
-                      <input id="bk-date" type="date" min={todayStr()} className={field} value={form.date} onChange={(e) => set("date", e.target.value)} />
+                      <label className={label}>Date</label>
+                      <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                        <PopoverTrigger asChild>
+                          <button type="button" className={`${field} flex items-center justify-between text-left ${errors.date ? errBorder : ""} ${!date ? "text-mut2" : ""}`}>
+                            {date ? dateLabel : "Pick a date"}
+                            <CalendarIcon className="h-4 w-4 shrink-0 text-mut opacity-80" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="w-auto">
+                          <Calendar mode="single" selected={date} onSelect={(d) => { setDate(d); setErrors((e) => ({ ...e, date: "" })); if (d) setDateOpen(false) }} disabled={{ before: startOfToday() }} defaultMonth={date} initialFocus />
+                        </PopoverContent>
+                      </Popover>
                       {errors.date && <p className={errCls}>{errors.date}</p>}
                     </div>
                     <div>
-                      <label className={label} htmlFor="bk-time">Time</label>
-                      <select id="bk-time" className={field} value={form.time} onChange={(e) => set("time", e.target.value)}>
-                        <option value="">Select a time</option>
-                        {TIMES.map((t) => <option key={t} value={t}>{t}</option>)}
-                      </select>
+                      <label className={label}>Time</label>
+                      <Select value={form.time} onValueChange={(v) => set("time", v)}>
+                        <SelectTrigger className={errors.time ? errBorder : ""} aria-label="Time"><SelectValue placeholder="Select a time" /></SelectTrigger>
+                        <SelectContent>{TIMES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                      </Select>
                       {errors.time && <p className={errCls}>{errors.time}</p>}
                     </div>
                   </div>
                   <div>
                     <label className={label} htmlFor="bk-notes">Notes <span className="text-mut2">(optional)</span></label>
-                    <textarea id="bk-notes" rows={2} className={field + " resize-none"} value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="A preferred barber, a special request…" />
+                    <textarea id="bk-notes" rows={2} className={`${field} resize-none`} value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="A preferred barber, a special request…" />
                   </div>
                 </div>
 
