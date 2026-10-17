@@ -1,3 +1,4 @@
-onlyBuiltDependencies:
-  - esbuild
-  - '@tailwindcss/oxide'
+# pnpm 12 gates dependency build scripts; esbuild's postinstall links its native binary.
+# (This is the key pnpm 12 renamed from the old `onlyBuiltDependencies` list.)
+allowBuilds:
+  esbuild: true
