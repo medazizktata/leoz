@@ -357,14 +357,15 @@ export function Proof() {
 }
 
 /* ========================= LOCATIONS ========================= */
-export const BRANCHES: [string, string, string, string][] = [["Palm Jumeirah", "reception.jpg", "+971 4 575 8377", "tel:+97145758377"], ["Sky Gardens", "lounge.jpg", "+971 4 288 5059", "tel:+97142885059"]]
+// [name, image, landline, tel:, mobile, tel:] - both numbers per branch are listed on leozbarber.com
+export const BRANCHES: [string, string, string, string, string, string][] = [["Palm Jumeirah", "reception.jpg", "+971 4 575 8377", "tel:+97145758377", "+971 58 178 2418", "tel:+971581782418"], ["Sky Gardens", "lounge.jpg", "+971 4 288 5059", "tel:+97142885059", "+971 50 246 7457", "tel:+971502467457"]]
 export function Locations() {
   return (
     <section id="locations" className="py-[clamp(72px,11vw,130px)]">
       <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14">
         <SectionHead eyebrow="Visit" title="Two homes in Dubai." sub="Both open 10:00 – 24:00, every day. Book your branch, or walk in." />
         <div className="grid gap-4 md:grid-cols-2">
-          {BRANCHES.map(([name, f, tel, href], i) => (
+          {BRANCHES.map(([name, f, tel, href, tel2, href2], i) => (
             <Reveal key={name} delay={i * 0.06}>
               <article className="group relative flex min-h-[440px] items-end overflow-hidden rounded-sm border border-line2">
                 <img src={img(f)} alt={`Leoz ${name}`} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105" />
@@ -372,7 +373,10 @@ export function Locations() {
                 <div className="relative z-10 w-full p-8">
                   <h3 className="text-[25px] font-light tracking-[0.01em]">{name}</h3>
                   <div className="mt-2 text-[12.5px] tracking-[0.04em] text-mut">Open daily · 10:00 – 24:00</div>
-                  <a href={href} className="text-[13.5px] text-ink hover:text-gold-lite">{tel}</a>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-0.5 text-[13.5px] text-ink">
+                    <a href={href} className="hover:text-gold-lite">{tel}</a>
+                    <a href={href2} className="hover:text-gold-lite">{tel2}</a>
+                  </div>
                   <div className="mt-5"><BookBtn prefill={{ branch: name }}>Book this branch</BookBtn></div>
                 </div>
               </article>

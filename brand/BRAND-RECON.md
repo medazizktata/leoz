@@ -34,6 +34,7 @@ Modern **Gulf luxe**, NOT rustic/heritage barbershop:
 - Dubai, 2 branches: **Palm Jumeirah** + **Sky Gardens**. Since 2012. Hours 10:00–24:00 daily.
 - Services: men's haircut, beard trim, mustache trim, **royal shave**, classic **straight-razor shave**, face care.
 - Booking: **Fresha** (fresha.com/book-now/leo-barbershop-gh2f7o6x). Social: IG @leoz_saloon, Snapchat leozsaloon, WhatsApp.
+- Phones (live site, re-checked 2026-10-17): Palm Jumeirah +971 4 575 8377 & +971 58 178 2418 (WhatsApp); Sky Gardens +971 4 288 5059 & +971 50 246 7457. Open every day, no days off or lunch breaks. Email hidden (Cloudflare).
 - Concept must be: premium, EN + AR, mobile-first, booking-forward.
 
 ## What we'll need to source (concept use only)

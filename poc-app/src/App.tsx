@@ -100,10 +100,11 @@ function Footer() {
             </div>
           </div>
           <FooterCol title="Visit">
-            {BRANCHES.map(([name, , tel, href]) => (
+            {BRANCHES.map(([name, , tel, href, tel2, href2]) => (
               <div key={name} className="mb-4">
                 <div className="flex items-center gap-2 text-[13.5px] text-ink"><MapPin size={13} className="text-gold" />{name}</div>
                 <a href={href} className="ml-[21px] block text-[13px] text-mut transition-colors hover:text-gold-lite">{tel}</a>
+                <a href={href2} className="ml-[21px] block text-[13px] text-mut transition-colors hover:text-gold-lite">{tel2}</a>
               </div>
             ))}
           </FooterCol>
