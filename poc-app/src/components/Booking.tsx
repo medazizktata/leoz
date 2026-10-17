@@ -53,8 +53,8 @@ const CATS: { key: string; icon: typeof Scissors; items: Svc[] }[] = [
 ]
 const ALL: Record<string, Svc> = Object.fromEntries(CATS.flatMap((c) => c.items.map((s) => [s.name, s])))
 const BRANCHES = [
-  { name: "Palm Jumeirah", note: "The Palm · open till midnight" },
-  { name: "Sky Gardens", note: "DIFC · open till midnight" },
+  { name: "Palm Jumeirah", note: "The Palm · open till midnight", addr: "The Palm Jumeirah, Dubai" },
+  { name: "Sky Gardens", note: "DIFC · open till midnight", addr: "Sky Gardens, DIFC, Dubai" },
 ]
 const BARBERS = ["First available", "Haval", "Mohamad", "Gulraiz", "Susie"]
 const STEPS = ["Services", "Where & who", "When", "Confirm"]
@@ -328,40 +328,59 @@ function StepWhen({ date, setDate, time, setTime, slotFits, slotTaken, finish, t
 }
 
 function StepConfirm({ svcs, branch, barber, date, time, finish, totalAed, totalMin, form, setForm, tried }: { svcs: Svc[]; branch: string; barber: string; date?: Date; time: string; finish: string; totalAed: number; totalMin: number; form: { name: string; phone: string; notes: string }; setForm: (f: { name: string; phone: string; notes: string }) => void; tried: boolean }) {
+  const addr = BRANCHES.find((b) => b.name === branch)?.addr || ""
   const nameErr = tried && !form.name.trim()
   const phoneErr = tried && form.phone.replace(/\D/g, "").length < 7
   return (
-    <div className="grid gap-7 md:grid-cols-2 md:gap-9">
-      <div>
+    <div className="grid gap-6 md:grid-cols-[1.02fr_1fr] md:items-stretch md:gap-8">
+      {/* receipt — fills its column, total pinned to the bottom */}
+      <div className="flex flex-col rounded-sm border border-line2 bg-char2/50 p-6">
         <p className={label}>Your appointment</p>
-        <div className="rounded-sm border border-line2 bg-char2/60 p-5">
-          <div className="flex items-center gap-2 text-[13.5px] text-ink"><MapPin size={14} className="text-gold" />{branch}{barber !== "First available" && <span className="text-mut">· with {barber}</span>}</div>
-          <div className="mt-2 flex items-center gap-2 text-[13.5px] text-ink"><Clock size={14} className="text-gold" />{date ? format(date, "EEE, d MMM yyyy") : ""} · {time}{finish && <span className="text-mut">– {finish}</span>}</div>
-          <div className="my-4 h-px bg-line" />
-          <ul className="space-y-2">
-            {svcs.map((s) => (
-              <li key={s.name} className="flex items-baseline justify-between gap-3 text-[13.5px]"><span className="font-light text-ink">{s.name} <span className="text-mut2">· {fmtDur(s.min)}</span></span><span className="font-medium text-gold-lite">AED {s.aed}</span></li>
-            ))}
-          </ul>
-          <div className="mt-4 flex items-baseline justify-between border-t border-line pt-3"><span className="text-[12px] uppercase tracking-[0.14em] text-mut">Total · {fmtDur(totalMin)}</span><span className="text-[18px] font-light text-gold-lite">AED {totalAed}</span></div>
+        <div className="mt-4 space-y-3.5 text-[13.5px]">
+          <div className="flex items-start gap-2.5">
+            <MapPin size={15} className="mt-0.5 shrink-0 text-gold" />
+            <span className="text-ink">{branch}{barber !== "First available" && <span className="text-mut"> · with {barber}</span>}{addr && <span className="mt-0.5 block text-[12px] text-mut2">{addr}</span>}</span>
+          </div>
+          <div className="flex items-start gap-2.5">
+            <Clock size={15} className="mt-0.5 shrink-0 text-gold" />
+            <span className="text-ink">{date ? format(date, "EEE, d MMM yyyy") : ""}<span className="text-mut"> · {time}{finish && ` – ${finish}`}</span></span>
+          </div>
+        </div>
+        <div className="my-5 h-px bg-line" />
+        <ul className="space-y-2.5">
+          {svcs.map((s) => (
+            <li key={s.name} className="flex items-baseline justify-between gap-3 text-[13.5px]"><span className="font-light text-ink">{s.name}<span className="text-mut2"> · {fmtDur(s.min)}</span></span><span className="font-medium text-gold-lite">AED {s.aed}</span></li>
+          ))}
+        </ul>
+        <div className="mt-auto flex items-end justify-between border-t border-line pt-5">
+          <div><div className="text-[11px] uppercase tracking-[0.18em] text-mut">Total</div><div className="mt-0.5 text-[11px] text-mut2">{fmtDur(totalMin)} · {svcs.length} service{svcs.length > 1 ? "s" : ""}</div></div>
+          <div className="text-[27px] font-light leading-none text-gold-lite">AED {totalAed}</div>
         </div>
       </div>
-      <div className="space-y-4">
-        <div>
-          <label className={label} htmlFor="bk-name">Full name</label>
-          <input id="bk-name" className={`${field} ${nameErr ? "border-[#c9765a]" : ""}`} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name" autoFocus />
-          {nameErr && <p className="mt-1 text-[11px] text-[#e3a07e]">Please tell us your name.</p>}
+
+      {/* contact — fields, reassurance pinned to the bottom */}
+      <div className="flex flex-col">
+        <div className="space-y-4">
+          <div>
+            <label className={label} htmlFor="bk-name">Full name</label>
+            <input id="bk-name" className={`${field} ${nameErr ? "border-[#c9765a]" : ""}`} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name" autoFocus />
+            {nameErr && <p className="mt-1 text-[11px] text-[#e3a07e]">Please tell us your name.</p>}
+          </div>
+          <div>
+            <label className={label} htmlFor="bk-phone">Phone / WhatsApp</label>
+            <input id="bk-phone" inputMode="tel" className={`${field} ${phoneErr ? "border-[#c9765a]" : ""}`} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+971 5X XXX XXXX" />
+            {phoneErr && <p className="mt-1 text-[11px] text-[#e3a07e]">Enter a valid phone number.</p>}
+          </div>
+          <div>
+            <label className={label} htmlFor="bk-notes">Notes <span className="normal-case tracking-normal text-mut2">(optional)</span></label>
+            <textarea id="bk-notes" rows={4} className={`${field} resize-none`} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="A preferred style, an allergy, a special request…" />
+          </div>
         </div>
-        <div>
-          <label className={label} htmlFor="bk-phone">Phone / WhatsApp</label>
-          <input id="bk-phone" inputMode="tel" className={`${field} ${phoneErr ? "border-[#c9765a]" : ""}`} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+971 5X XXX XXXX" />
-          {phoneErr && <p className="mt-1 text-[11px] text-[#e3a07e]">Enter a valid phone number.</p>}
+        <div className="mt-auto pt-5">
+          <div className="rounded-sm border border-line/70 bg-char/40 px-4 py-3 text-[12px] leading-relaxed text-mut">
+            We'll send a <b className="text-ink">WhatsApp confirmation</b> within minutes — no payment now, free to reschedule. Prefer to book yourself? <a href={FRESHA} target="_blank" rel="noopener noreferrer" className="text-gold-lite underline-offset-2 hover:underline">Open Fresha</a>.
+          </div>
         </div>
-        <div>
-          <label className={label} htmlFor="bk-notes">Notes <span className="normal-case tracking-normal text-mut2">(optional)</span></label>
-          <textarea id="bk-notes" rows={2} className={`${field} resize-none`} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="A preferred style, an allergy, a special request…" />
-        </div>
-        <p className="text-[11px] text-mut2">We'll confirm on WhatsApp. Prefer to book yourself? <a href={FRESHA} target="_blank" rel="noopener noreferrer" className="text-gold-lite underline-offset-2 hover:underline">Open Fresha</a>.</p>
       </div>
     </div>
   )
