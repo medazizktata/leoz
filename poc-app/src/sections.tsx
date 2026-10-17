@@ -99,13 +99,19 @@ export function Hero() {
   const [intro] = useState(() => forced || !reduce)
   const [start, setStart] = useState<{ x: number; y: number; scale: number } | null>(null)
   const [lifted, setLifted] = useState(!intro) // no intro -> straight to the resting crest
+  // the intro registers the crest onto the wall sign inside hero.jpg, so it only plays once that
+  // photo has loaded. if it errors or stalls, `dead` deactivates the intro -> straight to settled.
+  const heroRef = useRef<HTMLImageElement>(null)
+  const [heroLoaded, setHeroLoaded] = useState(false)
+  const [dead, setDead] = useState(false)
+  const live = intro && !dead // intro still in play (not deactivated by a failed/stalled hero photo)
 
   // derive the embedded (on-wall) transform from the crest's RESTING box. crestRef is the OUTER
   // wrapper, which is never transformed (the transform lives on an inner element), so its rect is
   // always the clean resting layout - safe to read on mount, after the web font swaps in (which
   // shifts the vertically-centred column a few px), and on resize, with no self-contamination.
   useLayoutEffect(() => {
-    if (!intro) return
+    if (!intro || !heroLoaded) return // measure (and thus show the embedded crest) only once the photo is up
     let cancelled = false
     const compute = () => {
       const el = crestRef.current
@@ -132,11 +138,16 @@ export function Hero() {
     const timers = [120, 350, 650].map((t) => window.setTimeout(() => { if (!cancelled) compute() }, t))
     try { (document as Document & { fonts?: FontFaceSet }).fonts?.ready.then(() => { if (!cancelled) compute() }) } catch { /* no font API */ }
     return () => { cancelled = true; window.removeEventListener("resize", compute); timers.forEach(clearTimeout) }
-  }, [intro])
+  }, [intro, heroLoaded])
 
-  // lift once the loader has handed off (or shortly after mount when no loader will play)
+  // the hero photo gates the intro: wait for it to load, then lift once the loader hands off.
+  // if the photo errors or stalls, deactivate (no transition) and let the crest sit settled.
   useEffect(() => {
-    if (!intro) return
+    if (!intro || dead || lifted) return
+    if (!heroLoaded) {
+      const stall = window.setTimeout(() => setDead(true), 5000) // hero stalled -> skip the transition
+      return () => clearTimeout(stall)
+    }
     let hold = 0
     // delay past the loader's exit (~0.9s after onDone) so the lift is seen on the bare wall, not behind the fade
     const lift = () => { hold = window.setTimeout(() => setLifted(true), 1000) }
@@ -149,23 +160,30 @@ export function Hero() {
     }
     hold = window.setTimeout(() => setLifted(true), 760) // no loader (e.g. ?intro review): a beat on the wall, then lift
     return () => clearTimeout(hold)
-  }, [intro])
+  }, [intro, dead, lifted, heroLoaded])
+
+  // the hero photo may already be cached before React attaches onLoad - catch that case
+  useEffect(() => {
+    const el = heroRef.current
+    if (el && el.complete && el.naturalWidth > 0) setHeroLoaded(true)
+  }, [])
 
   const text = (delay: number) => ({
     initial: false as const,
-    animate: lifted ? { opacity: 1, y: 0 } : { opacity: intro ? 0 : 1, y: intro ? 14 : 0 },
-    transition: { duration: 1, ease: [0.16, 1, 0.3, 1] as const, delay: lifted && intro ? delay : 0 },
+    animate: (lifted || dead) ? { opacity: 1, y: 0 } : { opacity: live ? 0 : 1, y: live ? 14 : 0 },
+    transition: { duration: 1, ease: [0.16, 1, 0.3, 1] as const, delay: lifted && live ? delay : 0 },
   })
 
   return (
     <section id="top" className="relative flex min-h-[100svh] items-center justify-center overflow-hidden text-center">
       <motion.div className="absolute inset-0" initial={{ scale: 1.08 }} animate={{ scale: 1 }} transition={{ duration: 2.2, ease: [0.16, 1, 0.3, 1] }}>
-        <img src={img("hero.jpg")} alt="" className="h-full w-full object-cover" style={{ objectPosition: `${WALL.x * 100}% ${WALL.y * 100}%` }} />
+        <img ref={heroRef} src={img("hero.jpg")} alt="" className="h-full w-full object-cover" style={{ objectPosition: `${WALL.x * 100}% ${WALL.y * 100}%` }}
+          onLoad={() => setHeroLoaded(true)} onError={() => setDead(true)} />
       </motion.div>
       <div className="absolute inset-0" style={{ background: "radial-gradient(135% 100% at 50% 34%,rgba(10,9,8,.5),rgba(10,9,8,.84) 60%,rgba(10,9,8,.97)),linear-gradient(0deg,#0a0908,rgba(10,9,8,.2) 44%,transparent 66%)" }} />
 
       {/* the sign's own glow at the wall-lion anchor: lit while the crest is embedded, dies as it lifts away */}
-      {intro && (
+      {live && start && (
         <motion.div aria-hidden className="pointer-events-none absolute z-[6] rounded-full"
           style={{ left: `${WALL.x * 100}%`, top: `${WALL.y * 100}%`, translate: "-50% -50%", width: "min(52vw,560px)", aspectRatio: "1", background: "radial-gradient(circle,rgba(252,202,110,.32),transparent 60%)" }}
           initial={false} animate={{ opacity: lifted ? 0 : 1 }} transition={{ duration: lifted ? 1.2 : 0 }} />
@@ -177,10 +195,12 @@ export function Hero() {
         <div ref={crestRef} className="mx-auto w-[clamp(210px,36vw,340px)]">
           <motion.div className="will-change-transform" style={{ transformOrigin: "50% 50%", transformPerspective: 1100 }}
             initial={false}
-            animate={!start && intro ? { opacity: 0 } : lifted
+            animate={!start && live ? { opacity: 0 } : (lifted || dead)
               ? { opacity: 1, x: 0, y: 0, scale: 1, rotateX: 0, rotateY: 0, skewX: 0, filter: LIFTED }
               : { opacity: 1, x: start!.x, y: start!.y, scale: start!.scale, rotateX: TILT.rotateX, rotateY: TILT.rotateY, skewX: TILT.skewX, filter: EMBEDDED }}
-            transition={lifted
+            transition={dead
+              ? { duration: 0 }
+              : lifted
               ? { duration: 1.6, ease: [0.16, 1, 0.3, 1], filter: { duration: 1.5 } }
               : { opacity: { duration: 0.45, ease: [0.16, 1, 0.3, 1] }, default: { duration: 0 } }}>
             <motion.div className="w-full overflow-hidden" style={{ aspectRatio: `1 / ${LION_FRAC * LOCKUP_AR}` }}
@@ -192,8 +212,8 @@ export function Hero() {
         </div>
         {/* the WORDMARK: bottom slice of the SAME lockup (so the gold matches the icon exactly), fades in mid-transition */}
         <motion.div className="-mt-1" initial={false}
-          animate={lifted ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: lifted && intro ? 0.6 : 0 }}>
+          animate={(lifted || dead) ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ duration: dead ? 0 : 0.85, ease: [0.16, 1, 0.3, 1], delay: lifted && live ? 0.6 : 0 }}>
           <div className="mx-auto w-[clamp(210px,36vw,340px)] overflow-hidden" style={{ aspectRatio: `1 / ${(1 - WORD_TOP) * LOCKUP_AR}` }}>
             <img src={img("logo-lockup-gold.png")} alt="Leoz Gents Salon" className="block w-full" style={{ marginTop: `${-WORD_TOP * LOCKUP_AR * 100}%` }} />
           </div>
