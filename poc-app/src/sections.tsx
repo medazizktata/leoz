@@ -242,7 +242,7 @@ export function Feature({ eyebrow, title, body, cta, image, flip, id, service, t
   )
 }
 
-/* ========================= RITUAL (Louis XIII) ========================= */
+/* ========================= RITUAL ========================= */
 export function Ritual() {
   const { open } = useBooking()
   return (
