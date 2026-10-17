@@ -16,6 +16,10 @@ brand/photos/
 brand/propaganda-brand/
 .impeccable/
 
+# later-phase proposal — holds the client quote (pricing figures); keep OUT of this public repo
+proposal/
+poc/deploy-pages.sh
+
 # scratch
 *.log
 poc/.trash/
