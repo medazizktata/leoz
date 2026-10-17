@@ -1,7 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react"
-import { motion } from "motion/react"
-import { ArrowRight, ArrowUpRight, Menu as MenuIcon, X } from "lucide-react"
+import { motion, AnimatePresence } from "motion/react"
+import { ArrowRight, ArrowUp, ArrowUpRight, Clock, MapPin, Menu as MenuIcon, X } from "lucide-react"
 import { BookingProvider, useBooking, type Prefill } from "./components/Booking"
+import { Loader } from "./components/Loader"
+import Gallery from "./components/Gallery"
 
 const FRESHA = "https://www.fresha.com/book-now/leo-barbershop-gh2f7o6x"
 const img = (n: string) => `/img/${n}`
@@ -186,27 +188,7 @@ function MenuSection() {
 }
 
 /* =========================== GALLERY =========================== */
-const SHOTS: [string, string][] = [["lionsign.jpg", "The lion"], ["reception.jpg", "Reception"], ["crown.jpg", "The crown"], ["craft.jpg", "The craft"], ["lounge.jpg", "The lounge"], ["coffee.jpg", "The welcome"]]
-function Gallery() {
-  return (
-    <section id="gallery" className="py-[clamp(72px,11vw,130px)]">
-      <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14">
-        <SectionHead eyebrow="The Space" title="Inside Leoz." sub="Marble, warm light, the gold lion — and the craft beneath it." />
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-          {SHOTS.map(([f, cap], i) => (
-            <Reveal key={f} delay={(i % 3) * 0.05} className={i === 0 ? "col-span-2 row-span-2 lg:col-span-2 lg:row-span-2" : ""}>
-              <figure className="group relative h-full min-h-[180px] overflow-hidden rounded-sm border border-line2">
-                <img src={img(f)} alt={cap} loading="lazy" className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-night/55 to-transparent" />
-                <figcaption className="absolute bottom-3 left-4 text-[10px] uppercase tracking-[0.22em] text-white/90">{cap}</figcaption>
-              </figure>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
+// Gallery lives in ./components/Gallery — uniform big grid + lightbox, fresh photos only
 
 /* ========================= TESTIMONIAL ========================= */
 function Proof() {
@@ -252,32 +234,68 @@ function Locations() {
 }
 
 /* =========================== FOOTER =========================== */
+function FooterCol({ title, children }: { title: string; children: ReactNode }) {
+  return (<div><h4 className="mb-5 text-[11px] uppercase tracking-[0.2em] text-gold">{title}</h4>{children}</div>)
+}
+const SOCIALS: [string, string, ReactNode][] = [
+  ["Instagram", "https://www.instagram.com/leoz_saloon",
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" /><circle cx="12" cy="12" r="4.3" /><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none" /></svg>],
+  ["Snapchat", "https://www.snapchat.com/add/leozsaloon",
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.02 2c2.65.01 4.86 2.02 5.01 4.66.03.57.01 1.15.02 1.72 0 .2.08.35.3.33.38-.03.74-.22 1.12-.26.3-.03.64.05.73.37.1.37-.22.55-.5.68-.34.16-.72.25-1.06.4-.23.1-.36.28-.26.54.42 1.13 1.25 1.96 2.35 2.44.2.09.42.14.62.24.32.16.3.5.02.68-.5.33-1.1.36-1.66.5-.25.06-.38.2-.44.45-.05.21-.1.42-.18.62-.1.28-.32.37-.6.33-.47-.06-.93-.18-1.4-.2-.65-.03-1.2.27-1.7.64-.62.46-1.27.8-2.07.78-.76-.02-1.38-.37-1.97-.8-.48-.36-1-.65-1.63-.63-.48.02-.95.14-1.43.2-.28.04-.5-.05-.6-.33-.08-.2-.13-.41-.18-.62-.06-.25-.2-.39-.44-.45-.56-.14-1.16-.17-1.66-.5-.28-.18-.3-.52.02-.68.2-.1.42-.15.62-.24 1.1-.48 1.93-1.31 2.35-2.44.1-.26-.03-.44-.26-.54-.34-.15-.72-.24-1.06-.4-.28-.13-.6-.31-.5-.68.09-.32.43-.4.73-.37.38.04.74.23 1.12.26.22.02.3-.13.3-.33.01-.57-.01-1.15.02-1.72C7.16 4.02 9.37 2.01 12.02 2z" /></svg>],
+  ["WhatsApp", "https://wa.me/971581782418",
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm5.8 13.02c-.26.73-1.3 1.29-1.76 1.36-.46.07-1.03.1-1.66-.1-.38-.12-.87-.28-1.5-.55-2.63-1.14-4.35-3.79-4.48-3.96-.13-.17-1.07-1.42-1.07-2.72 0-1.3.68-1.94.92-2.2.24-.26.53-.32.7-.32l.5.01c.16.01.38-.06.59.45.22.52.74 1.81.81 1.94.06.14.11.29.02.46-.09.17-.13.28-.26.43-.13.16-.27.34-.39.46-.13.13-.26.27-.11.53.15.26.67 1.12 1.45 1.81 1 .89 1.84 1.16 2.1 1.29.26.13.41.1.56-.07.15-.17.65-.76.82-1.02.17-.26.34-.22.59-.13.24.09 1.52.72 1.78.85.26.13.44.19.5.3.07.11.07.63-.19 1.25z" /></svg>],
+]
 function Footer() {
   return (
-    <footer className="border-t border-line bg-[#060504] pb-11 pt-[clamp(60px,9vw,100px)]">
-      <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14">
-        <div className="grid gap-9 md:grid-cols-[1.3fr_1fr_1fr]">
+    <footer className="relative overflow-hidden bg-[#060504]">
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-gold-deep to-transparent opacity-70" />
+      <img src={img("lion-gold.png")} alt="" aria-hidden className="pointer-events-none absolute -right-10 bottom-0 w-72 opacity-[0.04]" />
+      <div className="relative mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14">
+        <div className="flex flex-col items-center gap-7 border-b border-line py-14 text-center sm:flex-row sm:justify-between sm:text-left">
           <div>
-            <img src={img("logo-lockup-gold.png")} alt="Leoz Gents Salon" className="mb-5 h-28 w-auto" />
-            <p className="max-w-[34ch] text-[13px] font-light text-mut">A king's grooming. Dubai's premium gents salon since 2012: haircuts, the royal shave, skin, body and care.</p>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Your chair is waiting</p>
+            <h3 className="mt-3 text-[clamp(26px,3.6vw,40px)] font-light leading-tight tracking-[-0.02em]">Ready when you are.</h3>
           </div>
-          <div>
-            <h4 className="mb-4 text-[13px] font-medium tracking-[0.04em] text-gold">Opening hours</h4>
-            {[["Monday – Sunday", "10:00 – 24:00"], ["Palm Jumeirah", "+971 4 575 8377"], ["Sky Gardens", "+971 4 288 5059"]].map(([a, b]) => (
-              <div key={a} className="flex justify-between gap-3 border-b border-line py-1.5 text-[13px] text-mut"><span>{a}</span><b className="font-medium text-ink">{b}</b></div>
-            ))}
-          </div>
-          <div>
-            <h4 className="mb-4 text-[13px] font-medium tracking-[0.04em] text-gold">Connect</h4>
-            <ul className="space-y-1.5 text-[13.5px] text-mut">
-              <li><a href="https://www.instagram.com/leoz_saloon" target="_blank" rel="noopener noreferrer" className="hover:text-gold-lite">Instagram · @leoz_saloon</a></li>
-              <li><a href="https://wa.me/971581782418" target="_blank" rel="noopener noreferrer" className="hover:text-gold-lite">WhatsApp</a></li>
-              <li><a href={FRESHA} target="_blank" rel="noopener noreferrer" className="hover:text-gold-lite">Book on Fresha</a></li>
-            </ul>
+          <div className="flex flex-col items-center gap-3 sm:items-end">
+            <BookBtn>Book your chair</BookBtn>
+            <span className="text-[12px] text-mut">or walk in — open till midnight, daily.</span>
           </div>
         </div>
-        <div className="mt-12 flex flex-wrap justify-between gap-4 border-t border-line pt-6 text-[11px] tracking-[0.04em] text-mut2">
-          <span>© 2026 Leoz Gents Salon · Dubai</span><span>Concept by Propagenda</span>
+        <div className="grid gap-10 py-16 sm:grid-cols-2 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
+          <div>
+            <img src={img("logo-lockup-gold.png")} alt="Leoz Gents Salon" className="h-24 w-auto" />
+            <p className="mt-5 max-w-[30ch] text-[13px] font-light leading-relaxed text-mut">A king's grooming. Dubai's premium gents salon since 2012 — haircuts, the royal shave, skin, body and care.</p>
+            <div className="mt-6 flex gap-2.5">
+              {SOCIALS.map(([name, href, icon]) => (
+                <a key={name} href={href} target="_blank" rel="noopener noreferrer" aria-label={name} className="flex h-10 w-10 items-center justify-center rounded-full border border-line2 text-mut transition-colors hover:border-gold hover:text-gold-lite">{icon}</a>
+              ))}
+            </div>
+          </div>
+          <FooterCol title="Visit">
+            {BRANCHES.map(([name, , tel, href]) => (
+              <div key={name} className="mb-4">
+                <div className="flex items-center gap-2 text-[13.5px] text-ink"><MapPin size={13} className="text-gold" />{name}</div>
+                <a href={href} className="ml-[21px] block text-[13px] text-mut transition-colors hover:text-gold-lite">{tel}</a>
+              </div>
+            ))}
+          </FooterCol>
+          <FooterCol title="Hours">
+            <div className="flex items-start gap-2 text-[13.5px] text-ink"><Clock size={13} className="mt-1 shrink-0 text-gold" /><div>Monday – Sunday<div className="text-mut">10:00 – 24:00</div></div></div>
+            <p className="mt-4 text-[13px] font-light leading-relaxed text-mut">Walk-ins welcome.<br />Open till midnight, every day.</p>
+          </FooterCol>
+          <FooterCol title="Explore">
+            <ul className="space-y-2.5 text-[13.5px] text-mut">
+              {[["#experience", "The Salon"], ["#services", "Services"], ["#ritual", "The Ritual"], ["#gallery", "Gallery"], ["#locations", "Locations"]].map(([h, t]) => (
+                <li key={h}><a href={h} onClick={(e) => smoothScroll(e, h)} className="transition-colors hover:text-gold-lite">{t}</a></li>
+              ))}
+              <li className="pt-1"><a href={FRESHA} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-gold-lite hover:underline">Book on Fresha<ArrowUpRight size={13} /></a></li>
+            </ul>
+          </FooterCol>
+        </div>
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-line py-7 text-[11px] tracking-[0.04em] text-mut2 sm:flex-row">
+          <span>© 2026 Leoz Gents Salon · Dubai</span>
+          <span>Concept by Propagenda</span>
+          <a href="#top" onClick={(e) => smoothScroll(e, "#top")} className="inline-flex items-center gap-1 transition-colors hover:text-gold-lite">Back to top<ArrowUp size={12} /></a>
         </div>
       </div>
     </footer>
@@ -297,8 +315,15 @@ function BookFab() {
 }
 
 export default function App() {
+  const [showLoader, setShowLoader] = useState(() => {
+    try { return sessionStorage.getItem("leoz:loader") !== "1" } catch { return true }
+  })
+  useEffect(() => { try { sessionStorage.setItem("leoz:loader", "1") } catch { /* private mode: replays next load */ } }, [])
   return (
     <BookingProvider>
+      <AnimatePresence>
+        {showLoader && <Loader onDone={() => setShowLoader(false)} />}
+      </AnimatePresence>
       <Header />
       <main>
         <Hero />
