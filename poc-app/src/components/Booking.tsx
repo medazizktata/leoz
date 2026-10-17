@@ -149,17 +149,17 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
         <motion.div data-lenis-prevent className="fixed inset-0 z-[90] flex items-stretch justify-center sm:items-center sm:p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={onClose} />
           <motion.div role="dialog" aria-modal="true" aria-label="Book your visit"
-            className="relative z-10 flex h-full w-full max-w-[940px] flex-col overflow-hidden border border-line2 bg-night sm:h-auto sm:max-h-[94vh] sm:rounded-sm"
+            className="relative z-10 flex h-full w-full max-w-[940px] flex-col overflow-hidden border border-line2 bg-night sm:h-auto sm:max-h-[94vh] sm:rounded-sm sm:shadow-[0_50px_140px_-45px_rgba(0,0,0,0.92)]"
             initial={{ y: 40, opacity: 0, scale: 0.985 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 24, opacity: 0 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}>
 
             {/* header + stepper */}
-            <div className="flex shrink-0 items-center gap-4 border-b border-line px-5 py-4 sm:px-7">
-              <img src="/img/lion-gold.png" alt="" className="h-8 w-auto" />
+            <div className="flex shrink-0 items-center gap-3.5 border-b border-line px-5 py-4 sm:px-7">
+              <img src="/img/lion-gold.png" alt="" className="h-9 w-auto" />
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] uppercase tracking-[0.28em] text-gold">Reserve your chair</p>
-                <h3 className="truncate text-[17px] font-light leading-tight">{done ? "You're booked in." : "Book at Leoz"}</h3>
+                <h3 className="truncate text-[19px] font-light leading-tight tracking-[-0.01em]">{done ? "You're booked in." : "Book your visit"}</h3>
+                <p className="truncate text-[12px] font-light text-mut">{done ? "We'll confirm on WhatsApp shortly." : "Leoz Gents Salon · Dubai"}</p>
               </div>
-              <button onClick={onClose} aria-label="Close" className="text-mut transition-colors hover:text-ink"><X size={22} /></button>
+              <button onClick={onClose} aria-label="Close" className="shrink-0 text-mut transition-colors hover:text-ink"><X size={22} /></button>
             </div>
 
             {!done && (
@@ -178,7 +178,7 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
             )}
 
             {/* body */}
-            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:py-6" data-lenis-prevent>
+            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:min-h-[360px] sm:px-7 sm:py-6" data-lenis-prevent>
               {done ? (
                 <div className="grid place-items-center py-10 text-center">
                   <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-gold text-gold-lite"><Check size={30} /></div>
@@ -191,14 +191,18 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
                     <a href={FRESHA} target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.14em] text-mut transition-colors hover:text-gold-lite">or finalize on Fresha</a>
                   </div>
                 </div>
-              ) : step === 0 ? (
-                <StepServices cat={cat} setCat={setCat} sel={sel} toggle={toggle} />
-              ) : step === 1 ? (
-                <StepWhere branch={branch} setBranch={setBranch} barber={barber} setBarber={setBarber} />
-              ) : step === 2 ? (
-                <StepWhen date={date} setDate={setDate} time={time} setTime={setTime} slotFits={slotFits} slotTaken={slotTaken} finish={finish} totalMin={totalMin} />
               ) : (
-                <StepConfirm svcs={svcs} branch={branch} barber={barber} date={date} time={time} finish={finish} totalAed={totalAed} totalMin={totalMin} form={form} setForm={setForm} tried={tried} />
+                <motion.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}>
+                  {step === 0 ? (
+                    <StepServices cat={cat} setCat={setCat} sel={sel} toggle={toggle} />
+                  ) : step === 1 ? (
+                    <StepWhere branch={branch} setBranch={setBranch} barber={barber} setBarber={setBarber} />
+                  ) : step === 2 ? (
+                    <StepWhen date={date} setDate={setDate} time={time} setTime={setTime} slotFits={slotFits} slotTaken={slotTaken} finish={finish} totalMin={totalMin} />
+                  ) : (
+                    <StepConfirm svcs={svcs} branch={branch} barber={barber} date={date} time={time} finish={finish} totalAed={totalAed} totalMin={totalMin} form={form} setForm={setForm} tried={tried} />
+                  )}
+                </motion.div>
               )}
             </div>
 
@@ -207,7 +211,7 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
               <div className="flex shrink-0 flex-col gap-3 border-t border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
                 <div className="text-[12.5px] text-mut">
                   {svcs.length === 0 ? "No services selected yet" : (
-                    <span><b className="text-ink">{svcs.length}</b> service{svcs.length > 1 ? "s" : ""} · <b className="text-gold-lite">AED {totalAed}</b> · {fmtDur(totalMin)}{finish ? <> · done by ~{finish}</> : null}</span>
+                    <span><b className="text-ink">{svcs.length}</b> service{svcs.length > 1 ? "s" : ""} · <b className="tabular-nums text-gold-lite">AED {totalAed}</b> · {fmtDur(totalMin)}{finish ? <> · done by ~{finish}</> : null}</span>
                   )}
                 </div>
                 <div className="flex items-center gap-3">
@@ -250,7 +254,7 @@ function StepServices({ cat, setCat, sel, toggle }: { cat: number; setCat: (i: n
               className={`group flex items-center justify-between gap-3 rounded-sm border p-4 text-left transition-colors ${on ? "border-gold bg-gold/[0.07]" : "border-line2 hover:border-gold/50"}`}>
               <div className="min-w-0">
                 <div className="text-[14.5px] font-light text-ink">{s.name}</div>
-                <div className="mt-1 flex items-center gap-2 text-[12px] text-mut"><Clock size={12} className="text-mut2" />{fmtDur(s.min)} · <span className="font-medium text-gold-lite">AED {s.aed}</span></div>
+                <div className="mt-1 flex items-center gap-2 text-[12px] text-mut"><Clock size={12} className="text-mut2" />{fmtDur(s.min)} · <span className="font-medium tabular-nums text-gold-lite">AED {s.aed}</span></div>
               </div>
               <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-colors ${on ? "border-gold bg-gold text-[#1a1205]" : "border-line2 text-mut group-hover:border-gold group-hover:text-gold-lite"}`}>
                 {on ? <Check size={16} /> : <Plus size={16} />}
@@ -349,12 +353,12 @@ function StepConfirm({ svcs, branch, barber, date, time, finish, totalAed, total
         <div className="my-5 h-px bg-line" />
         <ul className="space-y-2.5">
           {svcs.map((s) => (
-            <li key={s.name} className="flex items-baseline justify-between gap-3 text-[13.5px]"><span className="font-light text-ink">{s.name}<span className="text-mut2"> · {fmtDur(s.min)}</span></span><span className="font-medium text-gold-lite">AED {s.aed}</span></li>
+            <li key={s.name} className="flex items-baseline justify-between gap-3 text-[13.5px]"><span className="font-light text-ink">{s.name}<span className="text-mut2"> · {fmtDur(s.min)}</span></span><span className="font-medium tabular-nums text-gold-lite">AED {s.aed}</span></li>
           ))}
         </ul>
         <div className="mt-auto flex items-end justify-between border-t border-line pt-5">
           <div><div className="text-[11px] uppercase tracking-[0.18em] text-mut">Total</div><div className="mt-0.5 text-[11px] text-mut2">{fmtDur(totalMin)} · {svcs.length} service{svcs.length > 1 ? "s" : ""}</div></div>
-          <div className="text-[27px] font-light leading-none text-gold-lite">AED {totalAed}</div>
+          <div className="text-[27px] font-light leading-none tabular-nums text-gold-lite">AED {totalAed}</div>
         </div>
       </div>
 
