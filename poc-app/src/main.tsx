@@ -5,7 +5,7 @@ import Lenis from "lenis"
 import App from "./App"
 import "./index.css"
 
-// smooth, cinematic scroll (Louis XIII restraint) — disabled for reduced-motion
+// smooth, cinematic scroll (Louis XIII restraint) - disabled for reduced-motion
 if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   const lenis = new Lenis({ duration: 1.1, smoothWheel: true })
   ;(window as unknown as { lenis: Lenis }).lenis = lenis

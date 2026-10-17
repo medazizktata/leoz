@@ -1,5 +1,5 @@
-import { type ReactNode } from "react"
-import { motion } from "motion/react"
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react"
+import { motion, useReducedMotion } from "motion/react"
 import { Link } from "react-router-dom"
 import { ArrowRight, ArrowUpRight } from "lucide-react"
 import { useBooking, type Prefill } from "./components/Booking"
@@ -68,24 +68,122 @@ export function PageHero({ eyebrow, title, sub, image }: { eyebrow: string; titl
 }
 
 /* ============================= HERO ============================= */
+
+// where the real lion sign sits inside hero.jpg (2400x1600), measured from the photo:
+// center as a fraction of the image, and the lion's width as a fraction of image width.
+// hero.jpg object-position is pinned to this center so the wall lion always lands at
+// (WALL.x*vw, WALL.y*vh) on screen, whatever the viewport - the anchor the crest flies from.
+const WALL = { x: 0.481, y: 0.349, lionW: 0.133, imgAspect: 2400 / 1600 }
+// lion-gold.png is a 300x300 box: the artwork fills ~90% of the width, centred near 51%/50%.
+const LION = { fillW: 0.9, cx: 0.51, cy: 0.5 }
+// logo-lockup-gold.png is 1775x1994 (H/W 1.123); the wordmark is the bottom slice below this fraction.
+const LOCKUP_AR = 1994 / 1775
+const LOCKUP_SPLIT = 0.63
+// the sign sits on a wall only slightly angled from the camera; the embedded icon takes that
+// tilt and straightens as it stands up off the wall. degrees, matched to the photo.
+const TILT = { rotateX: -4, rotateY: 11, skewX: -2 }
+// EMBEDDED matches the warm backlit cream of the metal sign; LIFTED is the clean gold logo with a
+// soft gold glow. both share the same filter functions in order so motion interpolates them.
+const EMBEDDED = "brightness(1.2) saturate(0.58) sepia(0.32) hue-rotate(-6deg) blur(1.1px) drop-shadow(0px 0px 0px rgba(0,0,0,0)) drop-shadow(0px 0px 0px rgba(252,202,110,0))"
+const LIFTED = "brightness(1) saturate(1) sepia(0) hue-rotate(0deg) blur(0px) drop-shadow(0px 24px 40px rgba(0,0,0,0.55)) drop-shadow(0px 0px 26px rgba(252,202,110,0.45))"
+
 export function Hero() {
+  const reduce = useReducedMotion()
+  const crestRef = useRef<HTMLDivElement>(null)
+  // the "crest lifts off the wall" intro plays on every load, never on reduced motion.
+  // `?intro` (or #intro) in the URL forces it even under reduced motion, for review.
+  const forced = (() => { try { return /[?&#]intro\b/.test(location.search + location.hash) } catch { return false } })()
+  const [intro] = useState(() => forced || !reduce)
+  const [start, setStart] = useState<{ x: number; y: number; scale: number } | null>(null)
+  const [lifted, setLifted] = useState(!intro) // no intro -> straight to the resting crest
+
+  // derive the embedded (on-wall) transform from the crest's own resting box, so the gold
+  // lion starts registered exactly over the wall sign's lion, at its size, any viewport.
+  useLayoutEffect(() => {
+    if (!intro) return
+    const el = crestRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    const vw = window.innerWidth, vh = window.innerHeight
+    const restLionCx = r.left + r.width * LION.cx // the icon element IS the lion
+    const restLionCy = r.top + r.height * LION.cy
+    const restLionW = r.width * LION.fillW        // visible lion width within its box
+    const renderedImgW = Math.max(vw, vh * WALL.imgAspect) // object-cover scaled width
+    const wallLionW = WALL.lionW * renderedImgW
+    setStart({
+      x: WALL.x * vw - restLionCx,
+      y: WALL.y * vh - restLionCy,
+      scale: Math.min(1, wallLionW / restLionW), // embed at wall size, never upscale past rest
+    })
+  }, [intro])
+
+  // lift once the loader has handed off (or shortly after mount when no loader will play)
+  useEffect(() => {
+    if (!intro) return
+    let hold = 0
+    // delay past the loader's exit (~0.9s after onDone) so the lift is seen on the bare wall, not behind the fade
+    const lift = () => { hold = window.setTimeout(() => setLifted(true), 1000) }
+    let loaderWillPlay = false
+    try { loaderWillPlay = !forced && sessionStorage.getItem("leoz:loader") !== "1" } catch { /* ignore */ }
+    if (loaderWillPlay) {
+      window.addEventListener("leoz:loaderdone", lift, { once: true })
+      const fb = window.setTimeout(() => setLifted(true), 3600) // safety if the event is missed
+      return () => { window.removeEventListener("leoz:loaderdone", lift); clearTimeout(hold); clearTimeout(fb) }
+    }
+    hold = window.setTimeout(() => setLifted(true), 760) // no loader (e.g. ?intro review): a beat on the wall, then lift
+    return () => clearTimeout(hold)
+  }, [intro])
+
+  const text = (delay: number) => ({
+    initial: false as const,
+    animate: lifted ? { opacity: 1, y: 0 } : { opacity: intro ? 0 : 1, y: intro ? 14 : 0 },
+    transition: { duration: 1, ease: [0.16, 1, 0.3, 1] as const, delay: lifted && intro ? delay : 0 },
+  })
+
   return (
     <section id="top" className="relative flex min-h-[100svh] items-center justify-center overflow-hidden text-center">
       <motion.div className="absolute inset-0" initial={{ scale: 1.08 }} animate={{ scale: 1 }} transition={{ duration: 2.2, ease: [0.16, 1, 0.3, 1] }}>
-        <img src={img("hero.jpg")} alt="" className="h-full w-full object-cover object-[center_38%]" />
+        <img src={img("hero.jpg")} alt="" className="h-full w-full object-cover" style={{ objectPosition: `${WALL.x * 100}% ${WALL.y * 100}%` }} />
       </motion.div>
       <div className="absolute inset-0" style={{ background: "radial-gradient(135% 100% at 50% 34%,rgba(10,9,8,.5),rgba(10,9,8,.84) 60%,rgba(10,9,8,.97)),linear-gradient(0deg,#0a0908,rgba(10,9,8,.2) 44%,transparent 66%)" }} />
-      <div className="relative z-10 mx-auto max-w-3xl px-6 pb-16 pt-28">
-        <motion.img src={img("logo-lockup-gold.png")} alt="Leoz Gents Salon" className="mx-auto w-[clamp(190px,34vw,300px)]"
-          initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }} />
-        <motion.p className="mx-auto mt-9 text-[11px] uppercase tracking-[0.42em] text-gold-lite" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.7 }}>Est. 2012 · Dubai</motion.p>
-        <motion.p className="mx-auto mt-5 max-w-xl text-[clamp(16px,1.6vw,19px)] font-light leading-relaxed text-[#ddd8cf]"
-          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.85 }}>
-          A king's grooming. Precise cuts, the <span className="font-medium text-gold-lite">royal shave</span>, and care worthy of a gentleman — in the heart of Dubai.
+
+      {/* the sign's own glow at the wall-lion anchor: lit while the crest is embedded, dies as it lifts away */}
+      {intro && (
+        <motion.div aria-hidden className="pointer-events-none absolute z-[6] rounded-full"
+          style={{ left: `${WALL.x * 100}%`, top: `${WALL.y * 100}%`, translate: "-50% -50%", width: "min(52vw,560px)", aspectRatio: "1", background: "radial-gradient(circle,rgba(252,202,110,.32),transparent 60%)" }}
+          initial={false} animate={{ opacity: lifted ? 0 : 1 }} transition={{ duration: lifted ? 1.2 : 0 }} />
+      )}
+
+      <div className="relative z-10 mx-auto max-w-3xl px-6 pb-16 pt-24">
+        {/* the ICON: fades in quickly on the wall sign, then lifts off, straightens, brightens, glows and floats */}
+        <motion.div ref={crestRef} className="mx-auto w-[clamp(150px,25vw,240px)] will-change-transform"
+          style={{ transformOrigin: `${LION.cx * 100}% ${LION.cy * 100}%`, transformPerspective: 1100 }}
+          initial={false}
+          animate={!start && intro ? { opacity: 0 } : lifted
+            ? { opacity: 1, x: 0, y: 0, scale: 1, rotateX: 0, rotateY: 0, skewX: 0, filter: LIFTED }
+            : { opacity: 1, x: start!.x, y: start!.y, scale: start!.scale, rotateX: TILT.rotateX, rotateY: TILT.rotateY, skewX: TILT.skewX, filter: EMBEDDED }}
+          transition={lifted
+            ? { duration: 1.6, ease: [0.16, 1, 0.3, 1], filter: { duration: 1.5 } }
+            : { opacity: { duration: 0.45, ease: [0.16, 1, 0.3, 1] }, default: { duration: 0 } }}>
+          <motion.img src={img("lion-gold.png")} alt="" aria-hidden className="w-full"
+            animate={lifted ? { y: [0, -7, 0] } : { y: 0 }}
+            transition={lifted ? { duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 1.9 } : { duration: 0 }} />
+        </motion.div>
+        {/* the WORDMARK: a separate element (bottom slice of the lockup) that fades in mid-transition, after the icon has lifted */}
+        <motion.div className="mt-4" initial={false}
+          animate={lifted ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: lifted && intro ? 0.6 : 0 }}>
+          <div className="mx-auto w-[clamp(200px,33vw,320px)] overflow-hidden" style={{ aspectRatio: `1 / ${(1 - LOCKUP_SPLIT) * LOCKUP_AR}` }}>
+            <img src={img("logo-lockup-gold.png")} alt="Leoz Gents Salon" className="block w-full" style={{ marginTop: `${-LOCKUP_SPLIT * LOCKUP_AR * 100}%` }} />
+          </div>
+        </motion.div>
+        <motion.p className="mx-auto mt-7 text-[11px] uppercase tracking-[0.42em] text-gold-lite" {...text(0.9)}>Est. 2012 · Dubai</motion.p>
+        <motion.p className="mx-auto mt-5 max-w-xl text-[clamp(16px,1.6vw,19px)] font-light leading-relaxed text-[#ddd8cf]" {...text(1.05)}>
+          A king's grooming. Precise cuts, the <span className="font-medium text-gold-lite">royal shave</span>, and care worthy of a gentleman, in the heart of Dubai.
         </motion.p>
-        <motion.div className="mt-9 flex flex-wrap items-center justify-center gap-5" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1 }}>
+        <motion.div className="mt-9 flex flex-wrap items-center justify-center gap-5" {...text(1.2)}>
           <BookBtn>Book your chair</BookBtn>
-          <span className="text-[12.5px] text-mut">or <span className="font-medium text-ink">walk in</span> — open till midnight, daily.</span>
+          <span className="text-[12.5px] text-mut">or <span className="font-medium text-ink">walk in</span>, open till midnight, daily.</span>
         </motion.div>
       </div>
       <a href="#experience" onClick={(e) => smoothScroll(e, "#experience")} className="absolute bottom-7 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-mut2" aria-label="Scroll">
@@ -133,7 +231,7 @@ export function Ritual() {
       <Reveal className="relative z-10 mx-auto max-w-2xl px-6 text-center">
         <p className="text-[11px] uppercase tracking-[0.4em] text-gold-lite">The Royal Shave</p>
         <h2 className="mt-5 text-[clamp(30px,5.4vw,58px)] font-light leading-[1.08] tracking-[-0.02em]">A rite,<br /><em className="font-normal italic">not a routine.</em></h2>
-        <p className="mx-auto mt-7 max-w-lg text-[15px] font-light text-[#d6d1c7]">Hot towel. Pre-shave oil. The slow glide of a single blade. The oldest ritual a man keeps, restored to the ceremony it deserves — crowned, unhurried, entirely yours.</p>
+        <p className="mx-auto mt-7 max-w-lg text-[15px] font-light text-[#d6d1c7]">Hot towel. Pre-shave oil. The slow glide of a single blade. The oldest ritual a man keeps, restored to the ceremony it deserves. Crowned, unhurried, entirely yours.</p>
         <div className="mt-9">
           <button type="button" onClick={() => open({ service: "The Royal Shave" })} className="inline-flex items-center gap-2 rounded-sm border border-line2 px-7 py-3.5 text-[12px] uppercase tracking-[0.14em] text-ink transition-colors hover:border-gold hover:text-gold-lite">Reserve the ritual<ArrowUpRight size={15} /></button>
         </div>
@@ -145,7 +243,7 @@ export function Ritual() {
 /* ============================= MENU ============================= */
 export const MENU: [string, [string, string][]][] = [
   ["Haircuts & Shaving", [["Haircut", "145"], ["Beard", "90"], ["Head shave", "110"], ["Hot oil treatment", "220"], ["Hair treatment blow out", "385"]]],
-  ["Facial & Skin", [["Express facial", "165"], ["Facial — hyaluronic", "385"], ["Facial — power C", "495"], ["Threading", "35"], ["Face wax", "65"]]],
+  ["Facial & Skin", [["Express facial", "165"], ["Hyaluronic facial", "385"], ["Power C facial", "495"], ["Threading", "35"], ["Face wax", "65"]]],
   ["Massage & Body", [["Relaxing massage", "275"], ["Deep tissue", "385"], ["Hot stone", "495"], ["Foot massage · 60 min", "220"]]],
   ["Manicure & Pedicure", [["Manicure", "110"], ["Pedicure", "130"], ["Paraffin hands", "165"], ["Callus removal", "65"]]],
 ]
@@ -153,7 +251,7 @@ export function MenuSection() {
   return (
     <section id="services" className="border-y border-line bg-char py-[clamp(72px,11vw,130px)]">
       <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14">
-        <SectionHead eyebrow="Services & Prices" title="A full gents salon." sub="Grooming, skin, body and care — the gentleman's essentials and the indulgences. Prices in AED." />
+        <SectionHead eyebrow="Services & Prices" title="A full gents salon." sub="Grooming, skin, body and care: the gentleman's essentials and the indulgences. Prices in AED." />
         <div className="grid gap-x-16 gap-y-12 md:grid-cols-2">
           {MENU.map(([cat, rows], i) => (
             <Reveal key={cat} delay={i * 0.05}>
@@ -175,11 +273,11 @@ export function MenuSection() {
 }
 
 /* ========================= REVIEWS ========================= */
-// real reviews — Alaa Taifor (Google) + Fresha (5.0 from 211); quotes used verbatim
+// real reviews - Alaa Taifor (Google) + Fresha (5.0 from 211); quotes used verbatim
 export const REVIEWS: { quote: string; name: string; src: string }[] = [
   { quote: "Very calm and very attentive. Great attention to detail.", name: "Reece T.", src: "Fresha review" },
-  { quote: "It's an every Friday tidy up for me — and always a great cut.", name: "Shaun B.", src: "Fresha review" },
-  { quote: "Barely had to tell him what to do — he knew exactly what I wanted the second I got on the chair.", name: "Salman", src: "Fresha review" },
+  { quote: "It's an every Friday tidy up for me, and always a great cut.", name: "Shaun B.", src: "Fresha review" },
+  { quote: "Barely had to tell him what to do. He knew exactly what I wanted the second I got on the chair.", name: "Salman", src: "Fresha review" },
 ]
 export function Proof() {
   return (

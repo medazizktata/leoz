@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 
-// auto-includes every image in src/assets/gallery (fresh shoots only — nothing reused elsewhere on the page)
+// auto-includes every image in src/assets/gallery (fresh shoots only - nothing reused elsewhere on the page)
 const IMAGES = Object.entries(import.meta.glob("../assets/gallery/*.{jpg,jpeg,png,webp}", { eager: true, import: "default" }))
   .sort(([a], [b]) => a.localeCompare(b))
   .map(([, url]) => url as string)
@@ -31,10 +31,10 @@ export default function Gallery() {
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <p className="text-[11px] uppercase tracking-[0.3em] text-gold">The Space</p>
           <h2 className="mt-4 text-[clamp(28px,4.2vw,48px)] font-light leading-[1.1] tracking-[-0.02em]">Inside Leoz.</h2>
-          <p className="mx-auto mt-4 max-w-xl text-[14.5px] font-light text-mut">Marble, warm light, the gold lion — and the craft beneath it. Step inside.</p>
+          <p className="mx-auto mt-4 max-w-xl text-[14.5px] font-light text-mut">Marble, warm light, the gold lion, and the craft beneath it. Step inside.</p>
         </div>
 
-        {/* uniform grid — big equal tiles, staggered reveal, click to open */}
+        {/* uniform grid - big equal tiles, staggered reveal, click to open */}
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
           {IMAGES.map((src, i) => (
             <motion.button
@@ -48,7 +48,7 @@ export default function Gallery() {
               className="group relative aspect-[4/3] overflow-hidden rounded-sm border border-line2/50 outline-none focus-visible:ring-2 focus-visible:ring-gold"
               aria-label={`Open photo ${i + 1} of ${IMAGES.length}`}
             >
-              <img src={src} alt={`Inside Leoz Gents Salon — ${i + 1}`} loading="lazy" className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110" />
+              <img src={src} alt={`Inside Leoz Gents Salon, photo ${i + 1}`} loading="lazy" className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-night/45 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </motion.button>
           ))}

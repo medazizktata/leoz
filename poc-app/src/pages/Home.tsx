@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import { ArrowRight, Crown, Scissors, Sparkles, Clock } from "lucide-react"
 import { Hero, Feature, Ritual, Proof, SectionHead, Reveal, img } from "../sections"
 
-// a cross-category taste of the menu — the full list lives on /services
+// a cross-category taste of the menu - the full list lives on /services
 const SIGNATURE: [string, string][] = [
   ["Haircut", "145"],
   ["Head shave", "110"],
@@ -18,9 +18,9 @@ const STATS: [string, string][] = [
 ]
 
 const PILLARS: [typeof Crown, string, string][] = [
-  [Scissors, "Master barbers", "A trained team and a consultation first — every cut shaped to your face and your life."],
+  [Scissors, "Master barbers", "A trained team and a consultation first, then every cut shaped to your face and your life."],
   [Crown, "The royal shave", "Hot towel, pre-shave oil and the slow glide of a single blade. The oldest ritual, restored."],
-  [Sparkles, "Skin, body & care", "Facials, massage and mani-pedi — a full gentleman's salon, not only a barber's chair."],
+  [Sparkles, "Skin, body & care", "Facials, massage and mani-pedi: a full gentleman's salon, not only a barber's chair."],
   [Clock, "Open till midnight", "Two homes in Dubai, every day from 10:00 to 24:00. Book ahead, or simply walk in."],
 ]
 
@@ -48,10 +48,10 @@ export default function Home() {
 
       <Feature id="experience" eyebrow="The Salon"
         title={<>More than a cut.<br /><em className="font-normal italic">A ritual.</em></>}
-        body="Leoz redefines men's grooming with an unwavering focus on luxury, precision and individualized care — for the modern gentleman who demands excellence. Traditional technique, modern craft, premium tools, in a room built to make routine grooming something you look forward to."
+        body="Leoz redefines men's grooming with an unwavering focus on luxury, precision and individualized care, for the modern gentleman who demands excellence. Traditional technique, modern craft, premium tools, in a room built to make routine grooming something you look forward to."
         cta="Step inside the salon" image={img("lounge.jpg")} to="/salon" />
 
-      {/* why Leoz — pillars */}
+      {/* why Leoz - pillars */}
       <section className="mx-auto max-w-[1320px] px-5 py-[clamp(50px,9vw,110px)] sm:px-8 lg:px-14">
         <SectionHead eyebrow="Why Leoz" title="Grooming, elevated." sub="Barbering at its best, the full range of a gentleman's salon, and a standard held since 2012." />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -71,7 +71,7 @@ export default function Home() {
 
       {/* signature services preview → full menu */}
       <section className="mx-auto max-w-[1180px] px-5 py-[clamp(60px,10vw,120px)] sm:px-8 lg:px-14">
-        <SectionHead eyebrow="The Menu" title="Signature services." sub="A taste of the list — grooming, skin and body. The full menu and prices live on the services page." />
+        <SectionHead eyebrow="The Menu" title="Signature services." sub="A taste of the list: grooming, skin and body. The full menu and prices live on the services page." />
         <div className="mx-auto grid max-w-2xl gap-x-16 gap-y-1 sm:grid-cols-2">
           {SIGNATURE.map(([n, p], i) => (
             <Reveal key={n} delay={(i % 2) * 0.05}>

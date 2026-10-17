@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { Check, X, ChevronLeft, ArrowRight, Clock, MapPin, Plus, Scissors, Sparkles, Hand, Flower2 } from "lucide-react"
+import { Check, X, ChevronLeft, ArrowRight, Clock, MapPin, Plus, Scissors, ScanFace, Hand, Flower2 } from "lucide-react"
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 
 /* ------------------------------------------------------------------ *
-   Leoz booking — a branded, on-site, multi-step appointment flow.
+   Leoz booking - a branded, on-site, multi-step appointment flow.
    Better than the off-site Fresha flow: on-brand and account-free,
    multi-service cart with a running TOTAL PRICE + TOTAL TIME + finish
    time, branch & barber in one step, a duration-aware slot grid (can't
@@ -31,7 +31,7 @@ const CATS: { key: string; icon: typeof Scissors; items: Svc[] }[] = [
     { name: "Hot oil treatment", min: 30, aed: 220 },
     { name: "Kids haircut", min: 40, aed: 110 },
   ] },
-  { key: "Facial & Skin", icon: Sparkles, items: [
+  { key: "Facial & Skin", icon: ScanFace, items: [
     { name: "Express facial", min: 30, aed: 165 },
     { name: "Hyaluronic facial", min: 60, aed: 385 },
     { name: "Power-C facial", min: 60, aed: 495 },
@@ -138,7 +138,7 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
   }
   function waUrl() {
     const lines = svcs.map((s) => `• ${s.name} (${fmtDur(s.min)} · AED ${s.aed})`).join("\n")
-    const msg = `Booking request — Leoz Gents Salon\n\nBranch: ${branch}\nWith: ${barber}\nDate: ${date ? format(date, "EEE, d MMM yyyy") : ""}\nTime: ${time}${finish ? ` – ${finish}` : ""}\n\nServices:\n${lines}\n\nTotal: AED ${totalAed} · ${fmtDur(totalMin)}\n\nName: ${form.name}\nPhone: ${form.phone}${form.notes ? `\nNotes: ${form.notes}` : ""}`
+    const msg = `Booking request for Leoz Gents Salon\n\nBranch: ${branch}\nWith: ${barber}\nDate: ${date ? format(date, "EEE, d MMM yyyy") : ""}\nTime: ${time}${finish ? ` – ${finish}` : ""}\n\nServices:\n${lines}\n\nTotal: AED ${totalAed} · ${fmtDur(totalMin)}\n\nName: ${form.name}\nPhone: ${form.phone}${form.notes ? `\nNotes: ${form.notes}` : ""}`
     return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`
   }
   function submit() { window.open(waUrl(), "_blank", "noopener"); setDone(true) }
@@ -171,7 +171,7 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
                       {i < step ? <Check size={11} /> : i + 1}
                     </span>
                     <span className="hidden sm:inline">{s}</span>
-                    {i < STEPS.length - 1 && <span className="mx-1 text-line2">—</span>}
+                    {i < STEPS.length - 1 && <span className="mx-1 text-line2">·</span>}
                   </button>
                 ))}
               </div>
@@ -184,7 +184,7 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
                   <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-gold text-gold-lite"><Check size={30} /></div>
                   <h3 className="text-[24px] font-light">Thank you, {form.name.trim().split(" ")[0] || "and welcome"}.</h3>
                   <p className="mx-auto mt-3 max-w-md text-[14px] font-light leading-relaxed text-mut">
-                    We've opened WhatsApp with your request — <span className="text-gold-lite">{svcs.length} service{svcs.length > 1 ? "s" : ""}</span> at <span className="text-gold-lite">{branch}</span>{barber !== "First available" ? <> with <span className="text-gold-lite">{barber}</span></> : null} on {date ? format(date, "EEE, d MMM") : ""} at {time}. Our team will confirm shortly.
+                    We've opened WhatsApp with your request: <span className="text-gold-lite">{svcs.length} service{svcs.length > 1 ? "s" : ""}</span> at <span className="text-gold-lite">{branch}</span>{barber !== "First available" ? <> with <span className="text-gold-lite">{barber}</span></> : null} on {date ? format(date, "EEE, d MMM") : ""} at {time}. Our team will confirm shortly.
                   </p>
                   <div className="mt-8 flex flex-col items-center gap-4">
                     <a href={waUrl()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-sm px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-[#1a1205]" style={goldBtn}>Open WhatsApp again</a>
@@ -337,7 +337,7 @@ function StepConfirm({ svcs, branch, barber, date, time, finish, totalAed, total
   const phoneErr = tried && form.phone.replace(/\D/g, "").length < 7
   return (
     <div className="grid gap-6 md:grid-cols-[1.02fr_1fr] md:items-stretch md:gap-8">
-      {/* receipt — fills its column, total pinned to the bottom */}
+      {/* receipt - fills its column, total pinned to the bottom */}
       <div className="flex flex-col rounded-sm border border-line2 bg-char2/50 p-6">
         <p className={label}>Your appointment</p>
         <div className="mt-4 space-y-3.5 text-[13.5px]">
@@ -362,7 +362,7 @@ function StepConfirm({ svcs, branch, barber, date, time, finish, totalAed, total
         </div>
       </div>
 
-      {/* contact — fields, reassurance pinned to the bottom */}
+      {/* contact - fields, reassurance pinned to the bottom */}
       <div className="flex flex-col">
         <div className="space-y-4">
           <div>
@@ -382,7 +382,7 @@ function StepConfirm({ svcs, branch, barber, date, time, finish, totalAed, total
         </div>
         <div className="mt-auto pt-5">
           <div className="rounded-sm border border-line/70 bg-char/40 px-4 py-3 text-[12px] leading-relaxed text-mut">
-            We'll send a <b className="text-ink">WhatsApp confirmation</b> within minutes — no payment now, free to reschedule. Prefer to book yourself? <a href={FRESHA} target="_blank" rel="noopener noreferrer" className="text-gold-lite underline-offset-2 hover:underline">Open Fresha</a>.
+            We'll send a <b className="text-ink">WhatsApp confirmation</b> within minutes, no payment now, free to reschedule. Prefer to book yourself? <a href={FRESHA} target="_blank" rel="noopener noreferrer" className="text-gold-lite underline-offset-2 hover:underline">Open Fresha</a>.
           </div>
         </div>
       </div>

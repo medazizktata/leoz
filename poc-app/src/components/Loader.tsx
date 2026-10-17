@@ -8,7 +8,7 @@ import { motion, useReducedMotion } from "motion/react"
 
    P2P writes its vector mark stroke by stroke and blooms true offset contours
    of the mark. The Leoz lion is a raster icon, so the "leading lines" are
-   concentric gold rings that bloom outward from the icon, innermost first —
+   concentric gold rings that bloom outward from the icon, innermost first -
    the same beat (reveal -> rings bloom -> zoom + fade), ~2.2s total. The zoom +
    fade is the AnimatePresence exit, fired when onDone flips the gate in App.
    Reduced motion: the icon held briefly, then a short fade. Scroll (Lenis +
@@ -17,7 +17,7 @@ import { motion, useReducedMotion } from "motion/react"
 const EXPO_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1] // the app's own reveal ease
 const EASE_INOUT: [number, number, number, number] = [0.65, 0, 0.35, 1]
 
-// concentric "leading lines" around the icon — [size (× icon), border opacity]
+// concentric "leading lines" around the icon - [size (× icon), border opacity]
 const RINGS: [number, number][] = [
   [1.28, 0.55],
   [1.68, 0.4],
@@ -96,7 +96,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
           />
         ))}
 
-        {/* icon only — no wordmark */}
+        {/* icon only - no wordmark */}
         <motion.div
           initial={{ scale: 0.86, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

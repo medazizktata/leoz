@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { Routes, Route, Link, useLocation } from "react-router-dom"
 import { ArrowUp, ArrowUpRight, Clock, MapPin, Menu as MenuIcon, X } from "lucide-react"
-import { BookingProvider, useBooking } from "./components/Booking"
+import { BookingProvider } from "./components/Booking"
 import { Loader } from "./components/Loader"
 import { img, FRESHA, smoothScroll, BookBtn, BRANCHES } from "./sections"
 import Home from "./pages/Home"
@@ -39,7 +39,7 @@ function Header() {
     <>
       <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${solid ? "border-b border-line bg-night/90 backdrop-blur-md" : "border-b border-transparent"}`}>
         <div className="mx-auto flex h-20 max-w-[1320px] items-center gap-6 px-5 sm:px-8 lg:px-14">
-          <Link to="/" onClick={onLogo} aria-label="Leoz Gents Salon — home" className="flex shrink-0 items-center">
+          <Link to="/" onClick={onLogo} aria-label="Leoz Gents Salon, home" className="flex shrink-0 items-center">
             <img src={img("lion-gold.png")} alt="Leoz Gents Salon" className="h-12 w-auto" />
           </Link>
           <nav className="ml-auto hidden items-center gap-9 lg:flex">
@@ -47,7 +47,6 @@ function Header() {
               <Link key={to} to={to} className={`text-[12.5px] tracking-wide transition-colors hover:text-gold-lite ${isActive(to) ? "text-gold-lite" : "text-mut"}`}>{t}</Link>
             ))}
           </nav>
-          <div className="ml-auto lg:ml-9"><BookBtn className="hidden lg:inline-flex">Book</BookBtn></div>
           <button className="ml-auto inline-flex h-11 w-11 items-center justify-center text-ink lg:hidden" aria-label="Open menu" onClick={() => setOpen(true)}><MenuIcon size={24} /></button>
         </div>
       </header>
@@ -87,13 +86,13 @@ function Footer() {
           </div>
           <div className="flex flex-col items-center gap-3 sm:items-end">
             <BookBtn>Book your chair</BookBtn>
-            <span className="text-[12px] text-mut">or walk in — open till midnight, daily.</span>
+            <span className="text-[12px] text-mut">or walk in, open till midnight, daily.</span>
           </div>
         </div>
         <div className="grid gap-10 py-16 sm:grid-cols-2 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
           <div>
             <img src={img("logo-lockup-gold.png")} alt="Leoz Gents Salon" className="h-24 w-auto" />
-            <p className="mt-5 max-w-[30ch] text-[13px] font-light leading-relaxed text-mut">A king's grooming. Dubai's premium gents salon since 2012 — haircuts, the royal shave, skin, body and care.</p>
+            <p className="mt-5 max-w-[30ch] text-[13px] font-light leading-relaxed text-mut">A king's grooming. Dubai's premium gents salon since 2012. Haircuts, the royal shave, skin, body and care.</p>
             <div className="mt-6 flex gap-2.5">
               {SOCIALS.map(([name, href, icon]) => (
                 <a key={name} href={href} target="_blank" rel="noopener noreferrer" aria-label={name} className="flex h-10 w-10 items-center justify-center rounded-full border border-line2 text-mut transition-colors hover:border-gold hover:text-gold-lite">{icon}</a>
@@ -131,18 +130,6 @@ function Footer() {
   )
 }
 
-/* ====================== FLOATING BOOK (Ruffians) ====================== */
-function BookFab() {
-  const { open } = useBooking()
-  return (
-    <button type="button" onClick={() => open()}
-      className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-sm border border-gold-deep px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-lite shadow-[0_18px_40px_-18px_rgba(0,0,0,0.8)] backdrop-blur-md"
-      style={{ background: "rgba(16,13,8,0.82)" }}>
-      Book now<ArrowUpRight size={14} />
-    </button>
-  )
-}
-
 /* scroll to top on page change, or to the hash target once the new page has rendered */
 function ScrollManager() {
   const loc = useLocation()
@@ -171,7 +158,7 @@ export default function App() {
   return (
     <BookingProvider>
       <AnimatePresence>
-        {showLoader && <Loader onDone={() => setShowLoader(false)} />}
+        {showLoader && <Loader onDone={() => { setShowLoader(false); window.dispatchEvent(new Event("leoz:loaderdone")) }} />}
       </AnimatePresence>
       <ScrollManager />
       <Header />
@@ -184,7 +171,6 @@ export default function App() {
         </Routes>
       </motion.main>
       <Footer />
-      <BookFab />
     </BookingProvider>
   )
 }
