@@ -74,11 +74,13 @@ export function PageHero({ eyebrow, title, sub, image }: { eyebrow: string; titl
 // hero.jpg object-position is pinned to this center so the wall lion always lands at
 // (WALL.x*vw, WALL.y*vh) on screen, whatever the viewport - the anchor the crest flies from.
 const WALL = { x: 0.481, y: 0.349, lionW: 0.133, imgAspect: 2400 / 1600 }
-// lion-gold.png is a 300x300 box: the artwork fills ~90% of the width, centred near 51%/50%.
-const LION = { fillW: 0.9, cx: 0.51, cy: 0.5 }
-// logo-lockup-gold.png is 1775x1994 (H/W 1.123); the wordmark is the bottom slice below this fraction.
+// both the lion icon and the wordmark are cropped from logo-lockup-gold.png (1775x1994, H/W 1.123)
+// so they share the exact same gold. the lion is the top slice; the wordmark the bottom slice.
 const LOCKUP_AR = 1994 / 1775
-const LOCKUP_SPLIT = 0.63
+const LION_FRAC = 0.62 // top slice height (fraction of the lockup) holding the lion
+const WORD_TOP = 0.635 // wordmark is the slice below this fraction
+// within the lion crop the lion sits centred and spans ~64% of the box width
+const LION = { fillW: 0.64, cx: 0.5, cy: 0.5 }
 // the sign sits on a wall only slightly angled from the camera; the embedded icon takes that
 // tilt and straightens as it stands up off the wall. degrees, matched to the photo.
 const TILT = { rotateX: -4, rotateY: 11, skewX: -2 }
@@ -105,9 +107,9 @@ export function Hero() {
     if (!el) return
     const r = el.getBoundingClientRect()
     const vw = window.innerWidth, vh = window.innerHeight
-    const restLionCx = r.left + r.width * LION.cx // the icon element IS the lion
+    const restLionCx = r.left + r.width * LION.cx // lion centre within the lion-crop box
     const restLionCy = r.top + r.height * LION.cy
-    const restLionW = r.width * LION.fillW        // visible lion width within its box
+    const restLionW = r.width * LION.fillW        // visible lion width within the crop box
     const renderedImgW = Math.max(vw, vh * WALL.imgAspect) // object-cover scaled width
     const wallLionW = WALL.lionW * renderedImgW
     setStart({
@@ -155,9 +157,9 @@ export function Hero() {
       )}
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 pb-16 pt-24">
-        {/* the ICON: fades in quickly on the wall sign, then lifts off, straightens, brightens, glows and floats */}
-        <motion.div ref={crestRef} className="mx-auto w-[clamp(150px,25vw,240px)] will-change-transform"
-          style={{ transformOrigin: `${LION.cx * 100}% ${LION.cy * 100}%`, transformPerspective: 1100 }}
+        {/* the ICON: top slice of the lockup. fades in quickly on the wall sign, then lifts off, straightens, brightens, glows and floats */}
+        <motion.div ref={crestRef} className="mx-auto w-[clamp(210px,36vw,340px)] will-change-transform"
+          style={{ transformOrigin: "50% 50%", transformPerspective: 1100 }}
           initial={false}
           animate={!start && intro ? { opacity: 0 } : lifted
             ? { opacity: 1, x: 0, y: 0, scale: 1, rotateX: 0, rotateY: 0, skewX: 0, filter: LIFTED }
@@ -165,16 +167,18 @@ export function Hero() {
           transition={lifted
             ? { duration: 1.6, ease: [0.16, 1, 0.3, 1], filter: { duration: 1.5 } }
             : { opacity: { duration: 0.45, ease: [0.16, 1, 0.3, 1] }, default: { duration: 0 } }}>
-          <motion.img src={img("lion-gold.png")} alt="" aria-hidden className="w-full"
+          <motion.div className="w-full overflow-hidden" style={{ aspectRatio: `1 / ${LION_FRAC * LOCKUP_AR}` }}
             animate={lifted ? { y: [0, -7, 0] } : { y: 0 }}
-            transition={lifted ? { duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 1.9 } : { duration: 0 }} />
+            transition={lifted ? { duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 1.9 } : { duration: 0 }}>
+            <img src={img("logo-lockup-gold.png")} alt="" aria-hidden className="block w-full" />
+          </motion.div>
         </motion.div>
-        {/* the WORDMARK: a separate element (bottom slice of the lockup) that fades in mid-transition, after the icon has lifted */}
-        <motion.div className="mt-4" initial={false}
+        {/* the WORDMARK: bottom slice of the SAME lockup (so the gold matches the icon exactly), fades in mid-transition */}
+        <motion.div className="-mt-1" initial={false}
           animate={lifted ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: lifted && intro ? 0.6 : 0 }}>
-          <div className="mx-auto w-[clamp(200px,33vw,320px)] overflow-hidden" style={{ aspectRatio: `1 / ${(1 - LOCKUP_SPLIT) * LOCKUP_AR}` }}>
-            <img src={img("logo-lockup-gold.png")} alt="Leoz Gents Salon" className="block w-full" style={{ marginTop: `${-LOCKUP_SPLIT * LOCKUP_AR * 100}%` }} />
+          <div className="mx-auto w-[clamp(210px,36vw,340px)] overflow-hidden" style={{ aspectRatio: `1 / ${(1 - WORD_TOP) * LOCKUP_AR}` }}>
+            <img src={img("logo-lockup-gold.png")} alt="Leoz Gents Salon" className="block w-full" style={{ marginTop: `${-WORD_TOP * LOCKUP_AR * 100}%` }} />
           </div>
         </motion.div>
         <motion.p className="mx-auto mt-7 text-[11px] uppercase tracking-[0.42em] text-gold-lite" {...text(0.9)}>Est. 2012 · Dubai</motion.p>
