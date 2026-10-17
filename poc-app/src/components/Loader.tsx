@@ -21,7 +21,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
   const reduce = useReducedMotion()
 
   useEffect(() => {
-    const lenis = (window as { lenis?: { stop(): void; start(): void } }).lenis
+    const lenis = (window as unknown as { lenis?: { stop(): void; start(): void } }).lenis
     lenis?.stop()
     const prev = document.body.style.overflow
     document.body.style.overflow = "hidden"
