@@ -72,6 +72,7 @@ const SelectContent = React.forwardRef<
     >
       <SelectScrollUpButton />
       <SelectPrimitive.Viewport
+        data-lenis-prevent
         className={cn("p-1", position === "popper" && "w-full min-w-[var(--radix-select-trigger-width)]")}
       >
         {children}

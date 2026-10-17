@@ -95,7 +95,7 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
   return (
     <AnimatePresence>
       {open && (
-        <motion.div className="fixed inset-0 z-[90] flex items-end justify-center sm:items-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+        <motion.div data-lenis-prevent className="fixed inset-0 z-[90] flex items-end justify-center sm:items-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
           <motion.div role="dialog" aria-modal="true" aria-label="Book your chair"
             className="relative z-10 max-h-[94vh] w-full max-w-lg overflow-y-auto border border-line2 bg-night sm:rounded-sm"
