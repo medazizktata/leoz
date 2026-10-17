@@ -36,6 +36,6 @@ Modern **Gulf luxe**, NOT rustic/heritage barbershop:
 - Booking: **Fresha** (fresha.com/book-now/leo-barbershop-gh2f7o6x). Social: IG @leoz_saloon, Snapchat leozsaloon, WhatsApp.
 - Concept must be: premium, EN + AR, mobile-first, booking-forward.
 
-## What we'll need to source (like P2P's "concept use only" imagery)
+## What we'll need to source (concept use only)
 - Premium barbershop photography (cuts, beard work, the straight-razor ritual, interiors) —
   their own photo library is thin. Source stock for the concept, flag "not cleared for launch".

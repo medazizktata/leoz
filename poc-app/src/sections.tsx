@@ -5,7 +5,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react"
 import { useBooking, type Prefill } from "./components/Booking"
 
 export const FRESHA = "https://www.fresha.com/a/leoz-barbershop-palm-dubai-palm-jumeirah-n84t1cic"
-export const img = (n: string) => `/img/${n}`
+export const img = (n: string) => `${import.meta.env.BASE_URL}img/${n}` // BASE_URL = /leoz/ on Pages, / in dev
 
 // smooth-scroll in-page anchors via Lenis (offset for the fixed header), with a native fallback
 export function smoothScroll(e: { preventDefault(): void }, href: string) {

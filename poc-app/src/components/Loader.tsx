@@ -1,18 +1,15 @@
 import { useEffect } from "react"
 import { motion, useReducedMotion } from "motion/react"
 
-/* First-mount intro loader, in the character of the P2P site loader (micdrop
-   lineage): the mark reveals on a near-black screen, holds, then zooms up
-   toward the viewer while concentric gold outlines bloom outward around it and
-   the overlay fades to show the page.
+/* First-mount intro loader: the mark reveals on a near-black screen, holds,
+   then zooms up toward the viewer while concentric gold outlines bloom outward
+   around it and the overlay fades to show the page.
 
-   P2P writes its vector mark stroke by stroke and blooms true offset contours
-   of the mark. The Leoz lion is a raster icon, so the "leading lines" are
-   concentric gold rings that bloom outward from the icon, innermost first -
-   the same beat (reveal -> rings bloom -> zoom + fade), ~2.2s total. The zoom +
-   fade is the AnimatePresence exit, fired when onDone flips the gate in App.
-   Reduced motion: the icon held briefly, then a short fade. Scroll (Lenis +
-   native) is locked while it is up. */
+   The Leoz lion is a raster icon, so the "leading lines" are concentric gold
+   rings that bloom outward from the icon, innermost first (reveal -> rings
+   bloom -> zoom + fade), ~2.2s total. The zoom + fade is the AnimatePresence
+   exit, fired when onDone flips the gate in App. Reduced motion: the icon held
+   briefly, then a short fade. Scroll (Lenis + native) is locked while it is up. */
 
 const EXPO_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1] // the app's own reveal ease
 const EASE_INOUT: [number, number, number, number] = [0.65, 0, 0.35, 1]
@@ -27,7 +24,7 @@ const RINGS: [number, number][] = [
 ]
 
 const Icon = ({ className = "" }: { className?: string }) => (
-  <img src="/img/lion-gold.png" alt="Leoz" draggable={false} className={`relative select-none w-[clamp(78px,13vw,124px)] ${className}`} />
+  <img src={`${import.meta.env.BASE_URL}img/lion-gold.png`} alt="Leoz" draggable={false} className={`relative select-none w-[clamp(78px,13vw,124px)] ${className}`} />
 )
 
 export function Loader({ onDone }: { onDone: () => void }) {

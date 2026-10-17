@@ -154,7 +154,7 @@ function Modal({ open, pref, onClose }: { open: boolean; pref: Prefill; onClose:
 
             {/* header + stepper */}
             <div className="flex shrink-0 items-center gap-3.5 border-b border-line px-5 py-4 sm:px-7">
-              <img src="/img/lion-gold.png" alt="" className="h-9 w-auto" />
+              <img src={`${import.meta.env.BASE_URL}img/lion-gold.png`} alt="" className="h-9 w-auto" />
               <div className="min-w-0 flex-1">
                 <h3 className="truncate text-[19px] font-light leading-tight tracking-[-0.01em]">{done ? "You're booked in." : "Book your visit"}</h3>
                 <p className="truncate text-[12px] font-light text-mut">{done ? "We'll confirm on WhatsApp shortly." : "Leoz Gents Salon · Dubai"}</p>

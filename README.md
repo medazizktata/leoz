@@ -1,13 +1,13 @@
 # Leoz Gents Salon — concept site + quotation (Propagenda)
 
-Sibling project to `p2p-apps`, built with the same pipeline. Two deliverables for the client
+Two deliverables for the client
 **Leoz Gents Salon** (Dubai — Palm Jumeirah + Sky Gardens):
 
 1. **`poc/`** — the concept website (premium, dark-gold, bilingual EN/AR, booking-forward).
-2. **`proposal/`** — the gated Scope & Quotation (reuses the p2p `build-host.mjs` encrypt →
+2. **`proposal/`** — the gated Scope & Quotation (`build-host.mjs` encrypt →
    GitHub Pages pipeline; built in a later phase).
 
-## Build pipeline (same as p2p)
+## Build pipeline
 Research (inspiration refs + brand recon) → **direction locked** → build concept via the
 `impeccable` skill → independent **blind-QA** subagent → measure → walkthrough → deploy built
 files to a public repo. The quote follows Track B: pricing-research subagents → build →
