@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import { ArrowRight, ArrowUpRight } from "lucide-react"
 import { useBooking, type Prefill } from "./components/Booking"
 
-export const FRESHA = "https://www.fresha.com/book-now/leo-barbershop-gh2f7o6x"
+export const FRESHA = "https://www.fresha.com/a/leoz-barbershop-palm-dubai-palm-jumeirah-n84t1cic"
 export const img = (n: string) => `/img/${n}`
 
 // smooth-scroll in-page anchors via Lenis (offset for the fixed header), with a native fallback

@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar"
 
 const WHATSAPP = "971581782418"
-const FRESHA = "https://www.fresha.com/book-now/leo-barbershop-gh2f7o6x"
+const FRESHA = "https://www.fresha.com/a/leoz-barbershop-palm-dubai-palm-jumeirah-n84t1cic"
 
 export type Prefill = { branch?: string; service?: string }
 type Ctx = { open: (p?: Prefill) => void }
