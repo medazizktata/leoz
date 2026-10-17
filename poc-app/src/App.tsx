@@ -190,17 +190,46 @@ function MenuSection() {
 /* =========================== GALLERY =========================== */
 // Gallery lives in ./components/Gallery — uniform big grid + lightbox, fresh photos only
 
-/* ========================= TESTIMONIAL ========================= */
+/* ========================= REVIEWS ========================= */
+// real reviews — Alaa Taifor (Google) + Fresha (5.0 from 211); quotes used verbatim
+const REVIEWS: { quote: string; name: string; src: string }[] = [
+  { quote: "Very calm and very attentive. Great attention to detail.", name: "Reece T.", src: "Fresha review" },
+  { quote: "It's an every Friday tidy up for me — and always a great cut.", name: "Shaun B.", src: "Fresha review" },
+  { quote: "Barely had to tell him what to do — he knew exactly what I wanted the second I got on the chair.", name: "Salman", src: "Fresha review" },
+]
+
 function Proof() {
   return (
-    <section className="border-y border-line bg-char py-[clamp(70px,12vw,140px)] text-center">
-      <Reveal className="mx-auto max-w-3xl px-6">
-        <div className="mb-6 text-[18px] tracking-[0.28em] text-gold-lite">★★★★★</div>
-        <blockquote className="mx-auto max-w-[24ch] text-[clamp(20px,3vw,33px)] font-light italic leading-[1.42] tracking-[-0.01em]">
-          “Very professional service and a well-trained team. If you want the best treatment, this is the right place for you.”
-        </blockquote>
-        <cite className="mt-7 block text-[12px] not-italic tracking-[0.04em] text-mut"><b className="font-semibold text-gold-lite">Alaa Taifor</b> · Google review · serving Dubai since 2012</cite>
-      </Reveal>
+    <section id="reviews" className="border-y border-line bg-char py-[clamp(70px,12vw,140px)]">
+      <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">Reviews</p>
+          <h2 className="mt-4 text-[clamp(28px,4.2vw,48px)] font-light leading-[1.1] tracking-[-0.02em]">Loved across Dubai.</h2>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[13px] text-mut">
+            <span className="text-[15px] tracking-[0.2em] text-gold-lite">★★★★★</span>
+            <span><b className="font-medium text-ink">5.0</b> · 211 reviews on Fresha · trusted since 2012</span>
+          </div>
+        </Reveal>
+
+        <Reveal className="mx-auto mt-12 max-w-3xl text-center">
+          <blockquote className="mx-auto max-w-[26ch] text-[clamp(20px,3vw,32px)] font-light italic leading-[1.42] tracking-[-0.01em]">
+            “Very professional service and a well-trained team. If you want the best treatment, this is the right place for you.”
+          </blockquote>
+          <cite className="mt-6 block text-[12px] not-italic tracking-[0.04em] text-mut"><b className="font-semibold text-gold-lite">Alaa Taifor</b> · Google review</cite>
+        </Reveal>
+
+        <div className="mt-14 grid gap-4 sm:grid-cols-3">
+          {REVIEWS.map((r, i) => (
+            <Reveal key={r.name} delay={i * 0.06} className="h-full">
+              <figure className="flex h-full flex-col rounded-sm border border-line2 bg-night p-6">
+                <div className="mb-4 text-[13px] tracking-[0.22em] text-gold-lite">★★★★★</div>
+                <blockquote className="flex-1 text-[14px] font-light leading-relaxed text-ink">“{r.quote}”</blockquote>
+                <figcaption className="mt-5 text-[11.5px] tracking-[0.03em] text-mut"><b className="font-semibold text-gold-lite">{r.name}</b> · {r.src}</figcaption>
+              </figure>
+            </Reveal>
+          ))}
+        </div>
+      </div>
     </section>
   )
 }
